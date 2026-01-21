@@ -1,0 +1,67 @@
+[
+  {
+    "id": "facial_pose_primary_moods",
+    "category": "facial_pose",
+    "label": "Primary Moods",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the face. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Pure joy, wide genuine smile with eyes crinkled 2. Deep sadness, eyes downcast and heavy lids 3. Intense anger, furrowed brow and clenched jaw 4. Shock and wonder, raised brows and open mouth 5. Subtle contempt, asymmetrical lip curl 6. Fearful dread, wide eyes and tense expression",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same face, proportions, skin texture, and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "facial_pose_bizarre_expressions",
+    "category": "facial_pose",
+    "label": "Bizarre Expressions",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Extreme facial close-ups. Background: white studio. FRAMES: 1. Asymmetrical jaw shift with mouth distortion 2. Scrunched nose with compressed facial features 3. One eye open wide, one eye tightly closed 4. Inflated cheeks with eyes rolled upward 5. Frozen unnatural smile showing teeth 6. Lower lip pulled upward covering the upper lip",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same face identity and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "facial_pose_ocular_macro",
+    "category": "facial_pose",
+    "label": "Ocular Macro",
+    "prompt_text": "Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Extreme macro photography. Background: clean white. FRAMES: 1. Iris close-up showing color and pattern 2. Cheek skin macro showing pores and texture 3. Mouth and chin macro showing lip structure 4. Asymmetrical sneer expression close-up 5. Awe expression with dilated pupils 6. Concentrated brow furrow close-up",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Consistent lighting and color tone",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "facial_pose_full_head_dynamics",
+    "category": "facial_pose",
+    "label": "Full Head Dynamics",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: white void. FRAMES: 1. Neutral frontal expression 2. Slight head turn highlighting skin texture 3. Mouth-focused expression study 4. Asymmetrical sneer with tension 5. Expression of awe and wonder 6. Concentrated scowl with brow tension",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same head shape, proportions, and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "facial_pose_kinetic_impact",
+    "category": "facial_pose",
+    "label": "Kinetic Impact",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Cinematic slow-motion look. FRAMES: 1. Side impact with jaw pushed sideways 2. Upward recoil from a rising strike 3. Front-facing compression from direct hit 4. Soft tissue vibration around cheeks 5. Rotational snap from angled impact 6. Full head recoil showing total displacement",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same face identity and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  }
+]

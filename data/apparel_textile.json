@@ -1,0 +1,81 @@
+[
+  {
+    "id": "apparel_textile_upper_body_spec",
+    "category": "apparel_textile",
+    "label": "Upper-Body Spec",
+    "prompt_text": "Use the uploaded GARMENT REFERENCE IMAGE as the exact source. Do not redesign the garment. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio void. FRAMES: 1. Waist-up front view showing chest drape and fabric fall 2. Waist-up rear view showing yoke and shoulder tension 3. Three-quarter view highlighting collar and lapel structure 4. Shoulder profile focusing on sleeve head and seam precision 5. High-angle medium view plunging toward the collar 6. Extreme close-up macro of fabric weave and stitching",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve 100% garment color, material, stitching, and construction from the reference image",
+      "Same lighting and camera style across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "apparel_textile_apparel_catalog",
+    "category": "apparel_textile",
+    "label": "Apparel Catalog",
+    "prompt_text": "Use the uploaded SHIRT REFERENCE IMAGE as the exact source. Strictly no human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: pure white studio. FRAMES: 1. Front flat view, graphic centered and readable 2. Back flat view showing rear print or blank surface 3. Side profile showing sleeve and collar depth 4. Three-quarter view showing garment volume 5. Neatly folded retail presentation 6. Compact square fold for packaging view",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve 100% graphic placement, color, and fabric behavior from the reference",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "apparel_textile_bottoms_catalog",
+    "category": "apparel_textile",
+    "label": "Bottoms Catalog",
+    "prompt_text": "Use the uploaded PANTS REFERENCE IMAGE as the exact source. No human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: white studio. FRAMES: 1. Front flat view showing waistband and leg alignment 2. Back flat view showing pockets and seam layout 3. Side profile highlighting leg volume 4. Three-quarter view showing drape and folds 5. Neatly folded lengthwise retail view 6. Compact waistband stack view",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve waistband shape, stitching, color, and textile behavior",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "apparel_textile_outerwear_catalog",
+    "category": "apparel_textile",
+    "label": "Outerwear Catalog",
+    "prompt_text": "Use the uploaded JACKET REFERENCE IMAGE as the exact source. No human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front shell view showing jacket structure 2. Rear shell view showing yoke and back panels 3. Side profile highlighting thickness and padding 4. Three-quarter view showing collar and form 5. Open-front view revealing internal lining 6. Neatly folded retail presentation",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve hardware, lining, padding, and textile fidelity",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "apparel_textile_hosiery_catalog",
+    "category": "apparel_textile",
+    "label": "Hosiery Catalog",
+    "prompt_text": "Use the uploaded SOCKS REFERENCE IMAGE as the exact source. No human feet or legs. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: pure white studio void. FRAMES: 1. Lateral profile showing full sock silhouette 2. Angled front view focusing on toe box and instep 3. Rear heel view highlighting Y-stitch construction 4. Top-down view looking into the cuff opening 5. Neatly folded retail pair 6. Extreme macro of knit pattern and fibers",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve knit density, ribbing, color, and logo placement",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "apparel_textile_shoe_tech_spec",
+    "category": "apparel_textile",
+    "label": "Shoe Tech Spec",
+    "prompt_text": "Use the uploaded FOOTWEAR REFERENCE IMAGE as the exact source. No human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: white studio. FRAMES: 1. Lateral profile showing overall silhouette 2. Front view highlighting toe box and lacing 3. Rear heel view showing heel counter 4. Top-down entry view of upper pattern 5. Outsole macro showing tread pattern 6. Three-quarter view showing depth and layering",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve shape, materials, and construction details",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  }
+]

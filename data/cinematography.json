@@ -1,0 +1,108 @@
+[
+  {
+    "id": "cinematography_essential_angles",
+    "category": "cinematography",
+    "label": "Essential Angles",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the character. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front-facing full body view, neutral stance for silhouette clarity 2. Rear full body view, upright posture showing back structure 3. Side profile full body view, sculptural outline 4. Extreme facial close-up focusing on eyes and skin detail 5. Chest-up medium shot showing torso and head proportions 6. High-angle downward view revealing footprint and spacing",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character, outfit, proportions, and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "cinematography_kinetic_flash",
+    "category": "cinematography",
+    "label": "Kinetic Flash",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: nighttime industrial Brooklyn streets. Lighting is dominated by direct on-camera flash with deep shadows. FRAMES: 1. Mid-air rooftop leap frozen by flash 2. Facial close-up through rising steam 3. Wide shot moving parallel to a brick wall 4. Close-up of hands gripping rusted metal 5. Rooftop vault captured mid-motion 6. High-angle plunge view into a vertical shaft",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting logic across all frames",
+      "Motion frozen cleanly with no blur on the subject",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "cinematography_street_flash",
+    "category": "cinematography",
+    "label": "Street Flash",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: empty nighttime city streets. FRAMES: 1. Crossing a wet street with reflective asphalt 2. Facial close-up through steam vent 3. Fire escape lunge frozen mid-air 4. Seated in stairwell flattened by flash 5. Side profile against chain-link fence 6. Pressed against fogged glass with flash glare",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting logic across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "cinematography_editorial_set_projection",
+    "category": "cinematography",
+    "label": "Editorial Set Projection",
+    "prompt_text": "Use the uploaded ENVIRONMENT REFERENCE IMAGE as the exact spatial anchor. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Maintain identical lighting direction, materials, and atmosphere across all frames. FRAMES: 1. Wide establishing view anchoring the space 2. True top-down zenith view of the environment 3. High-angle three-quarter view showing depth 4. Side-on profile view emphasizing spatial rhythm 5. Ground-level upward view highlighting scale 6. Extreme close-up of a primary surface detail",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve architectural structure and material behavior",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "cinematography_white_void_standoff",
+    "category": "cinematography",
+    "label": "White Void Standoff",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGES for both characters. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: sterile white void. FRAMES: 1. Wide symmetrical standoff with both characters facing each other 2. Over-the-shoulder view focusing on character B's eyes 3. Over-the-shoulder view focusing on character A's eyes 4. Extreme close-up profile with faces inches apart 5. Low-angle shot emphasizing dominance and power 6. Juxtaposed macro view of both characters' eyes",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Consistent lighting and camera style across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "cinematography_impact_ko",
+    "category": "cinematography",
+    "label": "Impact & KO",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGES for both fighters. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: clean white technical void. FRAMES: 1. Wide collision moment just before impact 2. Medium shot of character A landing a strike 3. Medium shot of character B countering 4. Low-angle finishing uppercut 5. Wide knockdown with one fighter falling 6. Exhausted aftermath standoff",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same lighting and camera logic across all frames",
+      "Motion frozen sharply with no blur on faces",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "cinematography_industrial_after_hours",
+    "category": "cinematography",
+    "label": "Industrial After Hours",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: abandoned industrial Brooklyn at night. FRAMES: 1. Leaning against a rusted fire escape 2. Inside abandoned boiler room with harsh flash 3. Facing exposed electrical panels 4. Top-down view from steel catwalk 5. Side profile near loading dock 6. Extreme macro of hands gripping steel railing",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same lighting logic and environment across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "cinematography_supernova_recoil",
+    "category": "cinematography",
+    "label": "Supernova Recoil",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: pure black void. FRAMES: 1. Frontal impact knocking the figure backward 2. Low-angle view of ascending recoil 3. Side profile of suspended recoil 4. High-angle plunge into darkness 5. Macro head-and-shoulders light haze 6. Rear view fading into infinity",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Subject rendered as a featureless white silhouette",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  }
+]

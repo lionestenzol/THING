@@ -1,0 +1,55 @@
+[
+  {
+    "id": "product_commercial_hero",
+    "category": "product",
+    "label": "Commercial Hero",
+    "prompt_text": "Use the uploaded PRODUCT REFERENCE IMAGE to preserve exact design, color, and proportions. Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front-facing hero interaction, product held at chest height 2. Extreme close-up of hands interacting with the product 3. Three-quarter lifestyle view, character walking naturally with product 4. Top-down overhead view of character and product on white surface 5. Low-angle hero view looking up at character holding product 6. Side profile focusing on hand-to-product contact points",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same product, same character, same lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "product_surface_topography",
+    "category": "product",
+    "label": "Surface Topography",
+    "prompt_text": "Use the uploaded TEXTILE OR GARMENT REFERENCE IMAGE to preserve exact weave and material qualities. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. White studio void. FRAMES: 1. Straight-on macro view showing full weave pattern 2. Angled macro view revealing material depth 3. Grazing-angle macro highlighting surface fibers 4. High-angle macro plunging into material folds 5. Centered macro showing repeating structural pattern 6. Tilted-focus macro with soft depth falloff",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Consistent lighting and color tone across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "product_acrobatic_flux",
+    "category": "product",
+    "label": "Acrobatic Flux",
+    "prompt_text": "Use the uploaded PRODUCT REFERENCE IMAGE. Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Clean white studio. FRAMES: 1. Traditional three-object juggle pattern, frozen mid-motion 2. Low-angle view tracking one product at peak height 3. Under-leg toss during active movement 4. Close-up balancing the product on face or head 5. Rear view catching product behind the back 6. Top-down view catching multiple products at once",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character, same product, same lighting across all frames",
+      "Motion is frozen cleanly with no blur on the product",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  },
+  {
+    "id": "product_studio_liquid",
+    "category": "product",
+    "label": "Studio Liquid",
+    "prompt_text": "Use the uploaded BEVERAGE PRODUCT REFERENCE IMAGE to preserve exact label design, color, and container shape. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: pure white technical void. FRAMES: 1. Centered floating product hero with soft shadow beneath 2. Extreme macro of condensation droplets on the surface 3. Product intersecting a suspended circular liquid splash 4. Absolute top-down view with product centered in liquid ripple 5. Ultra-close label detail where typography feels sculptural 6. Sideways liquid pour defying gravity into the container",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same container, same branding, same lighting logic across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ]
+  }
+]

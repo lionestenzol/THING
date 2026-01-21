@@ -1,0 +1,72 @@
+[
+  {
+    "id": "global_navigation_structure",
+    "category": "global_rules",
+    "label": "Primary Navigation",
+    "prompt_text": "The app homepage is a stack of category sections, each containing a grid of cards. Each category answers the question: 'What am I trying to create right now?' Examples include Anatomy & Poses, Facial Dynamics, Apparel & Textile, Macro & Product, and Cinematography.",
+    "constraints": [
+      "Categories are always visible on scroll",
+      "Categories are never hidden behind filters",
+      "Each category clearly shows how many modules it contains"
+    ]
+  },
+  {
+    "id": "global_grid_layout",
+    "category": "global_rules",
+    "label": "Grid Card Layout",
+    "prompt_text": "All prompts are displayed as grid cards. Think of each card as: 'One ready-to-use visual system.' The grid is designed to be the primary interaction model of the app.",
+    "constraints": [
+      "Cards are displayed in a clean, evenly spaced grid",
+      "All cards are equal size",
+      "The grid is easy to scan visually",
+      "Cards never overlap or resize unexpectedly"
+    ]
+  },
+  {
+    "id": "global_card_content",
+    "category": "global_rules",
+    "label": "Card Content",
+    "prompt_text": "Each grid card contains a Category Tag, Prompt Name, Short Description, and a Copy Icon. Descriptions explain what the user will get, avoid technical jargon, and use simple, visual language.",
+    "constraints": [
+      "Entire card is clickable",
+      "Hover state clearly shows interactivity",
+      "Cards feel safe to click (no surprise actions)"
+    ]
+  },
+  {
+    "id": "global_prompt_detail_view",
+    "category": "global_rules",
+    "label": "Prompt Detail View",
+    "prompt_text": "Clicking a card opens a detail view explaining what the prompt creates, typical use cases, and available options. It includes a Prompt Overview Panel, Variation Selector, Frame Grid (01-06), and a Primary Action Button to Deploy Full Contact Sheet.",
+    "constraints": [
+      "Variations change the vibe, not the structure",
+      "Variations never break the grid or layout",
+      "Switching variations should feel predictable, safe, and reversible",
+      "Frame tiles include frame number, short description, and copy button"
+    ]
+  },
+  {
+    "id": "global_copy_feedback",
+    "category": "global_rules",
+    "label": "Copy & Feedback Behavior",
+    "prompt_text": "Copying is the core action of the app. Users must be able to copy the full prompt or individual frames. The UI must provide immediate visual confirmation.",
+    "constraints": [
+      "Happen instantly",
+      "Show clear confirmation (checkmark, glow, or text change)",
+      "Never open pop-ups"
+    ]
+  },
+  {
+    "id": "global_visual_usability_standards",
+    "category": "global_rules",
+    "label": "Visual & Usability Standards",
+    "prompt_text": "The aesthetic uses a dark background with metallic chrome surfaces and neon-lime highlights. Typography uses Orbitron for headings and Switzer for body text. The app follows Nielsen Norman Group principles for obvious actions and consistent feedback.",
+    "constraints": [
+      "Animations must feel smooth, calm, and premium",
+      "No flashy or distracting effects",
+      "Use a golden-ratio type scale",
+      "Prioritize readability over decoration",
+      "Make actions obvious and keep interactions consistent"
+    ]
+  }
+]
