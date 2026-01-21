@@ -1,0 +1,93 @@
+[
+{
+"id": "anatomy_pose_fashion_stances",
+"category": "anatomy_pose",
+"label": "Fashion Stances",
+"prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the character. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front view, full body, neutral fashion stance 2. Back view, full body, upright posture 3. Side profile, full body, relaxed stance 4. Front view, full body, arms extended outward 5. Low-angle full body view, camera near ground 6. Top-down full body view, camera directly overhead",
+"constraints": [
+"Exact 3x2 grid, exactly 6 frames",
+"All frames identical in size and perfectly aligned",
+"Thin 2px grid dividers between frames",
+"Same character, outfit, proportions, facial features, and lighting in every frame",
+"No visible text, labels, numbers, captions, or overlays"
+]
+},
+{
+"id": "anatomy_pose_floating_poses",
+"category": "anatomy_pose",
+"label": "Floating Poses",
+"prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: pure white void. FRAMES: 1. Vertical floating pose, limbs relaxed 2. Upside-down floating pose 3. Horizontal floating pose, body rotated sideways 4. Corkscrew rotation pose in mid-air 5. Worm-eye view looking up at floating character 6. Top-down view of character floating cross-legged",
+"constraints": [
+"Exact 3x2 grid, exactly 6 frames",
+"All frames identical in size and perfectly aligned",
+"Thin 2px grid dividers",
+"Same character and lighting across all frames",
+"No visible text, labels, numbers, captions, or overlays"
+]
+},
+{
+"id": "anatomy_pose_floor_poses",
+"category": "anatomy_pose",
+"label": "Floor Poses",
+"prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Surface: white polished floor. FRAMES: 1. Cross-legged seated pose, upright posture 2. Kneeling upright pose, viewed from above 3. Side recline supported by one arm 4. Deep crouch facing forward 5. Close-up of hands pressing into the floor 6. Top-down view of body lying flat in star shape",
+"constraints": [
+"Exact 3x2 grid, exactly 6 frames",
+"All frames identical in size and perfectly aligned",
+"Thin 2px grid dividers",
+"Same character, lighting, and environment across all frames",
+"No visible text, labels, numbers, captions, or overlays"
+]
+},
+{
+"id": "anatomy_pose_kung_fu_moves",
+"category": "anatomy_pose",
+"label": "Kung Fu Moves",
+"prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: minimal white void. FRAMES: 1. Horse stance, front view, deep crouch 2. Low snake stance, side profile close to ground 3. One-leg balance stance, upright posture 4. Forward lunge strike toward camera 5. Rear-view low pounce stance 6. Top-down view showing hand formations",
+"constraints": [
+"Exact 3x2 grid, exactly 6 frames",
+"All frames identical in size and perfectly aligned",
+"Thin 2px grid dividers",
+"Same character and lighting across all frames",
+"No visible text, labels, numbers, captions, or overlays"
+]
+},
+{
+"id": "anatomy_pose_editorial_imbalance",
+"category": "anatomy_pose",
+"label": "Editorial Imbalance",
+"prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: minimal white studio. FRAMES: 1. Uneven shoulder alignment, front view 2. Strong hip lean, three-quarter view 3. Mismatched arm positions, full body 4. Sharp head tilt with body lean 5. Pigeon-toed stance emphasizing imbalance 6. Rear view with twisted torso",
+"constraints": [
+"Exact 3x2 grid, exactly 6 frames",
+"All frames identical in size and perfectly aligned",
+"Thin 2px grid dividers",
+"Same character and lighting across all frames",
+"No visible text, labels, numbers, captions, or overlays"
+]
+},
+{
+"id": "anatomy_pose_locked_camera_editorial_grid",
+"category": "anatomy_pose",
+"label": "Locked-Camera Editorial Grid",
+"prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Lighting and styling must remain identical. FRAMES: 1. Eye-level full-body shot 2. Low-angle medium shot 3. High-angle full-body shot 4. Side-profile medium shot 5. Extreme low-angle full-body shot 6. Top-down medium shot",
+"constraints": [
+"Exact 3x2 grid, exactly 6 frames",
+"All frames identical in size and perfectly aligned",
+"Thin 2px grid dividers",
+"Same character and lighting across all frames",
+"No visible text, labels, numbers, captions, or overlays"
+]
+},
+{
+"id": "anatomy_pose_hand_gestures",
+"category": "anatomy_pose",
+"label": "Hand Gestures",
+"prompt_text": "Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES) focused on HANDS ONLY. Resolution: 8K. Background: clean white void. FRAMES: 1. Relaxed open hand pose 2. Hands framing the face area 3. Hands reaching upward toward camera 4. Hands near head with interlocked tension 5. Over-the-shoulder reach into space 6. Top-down view with hands arranged symmetrically",
+"constraints": [
+"Exact 3x2 grid, exactly 6 frames",
+"All frames identical in size and perfectly aligned",
+"Thin 2px grid dividers",
+"Consistent lighting across all frames",
+"No visible text, labels, numbers, captions, or overlays"
+]
+}
+]
