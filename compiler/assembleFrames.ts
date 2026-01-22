@@ -23,5 +23,6 @@ export function formatIdentity(input: { character_ref?: string | null; product_r
   if (input.character_ref) lines.push("Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.");
   if (input.product_ref) lines.push("Use the uploaded PRODUCT REFERENCE IMAGE as the exact source.");
   if (input.environment_ref) lines.push("Use the uploaded ENVIRONMENT REFERENCE IMAGE as the spatial anchor.");
+  if (lines.length === 0) lines.push("No reference images specified.");
   return lines.join("\n");
 }
