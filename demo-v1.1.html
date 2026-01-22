@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>12 Pro Photos in 10 Seconds</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #09090b;
+      color: #fafafa;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .screen {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Screen 1: Landing */
+    .landing {
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .landing h1 {
+      font-size: clamp(2.5rem, 8vw, 4rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .landing .subtitle {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      color: #a1a1aa;
+      margin-bottom: 2.5rem;
+      max-width: 400px;
+    }
+
+    .cta-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .btn-primary {
+      background: #ccff00;
+      color: #09090b;
+      font-size: 1.125rem;
+      font-weight: 700;
+      padding: 1.125rem 2.5rem;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background: #b8e600;
+      transform: scale(1.02);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 1rem 2rem;
+      border: 1px solid #3f3f46;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
+    }
+
+    .btn-ghost:hover {
+      background: #18181b;
+      border-color: #52525b;
+      color: #fafafa;
+    }
+
+    .trust-line {
+      margin-top: 3rem;
+      font-size: 0.875rem;
+      color: #52525b;
+    }
+
+    /* Screen 2: Upload */
+    .upload-screen {
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #71717a;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-bottom: 2rem;
+      padding: 0.5rem 0;
+      text-align: left;
+    }
+
+    .back-btn:hover {
+      color: #d4d4d8;
+    }
+
+    .screen-title {
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .screen-subtitle {
+      text-align: center;
+      color: #71717a;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+
+    .drop-zone {
+      aspect-ratio: 1;
+      max-width: 360px;
+      margin: 0 auto 2rem;
+      border: 2px dashed #3f3f46;
+      border-radius: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .drop-zone:hover {
+      border-color: #71717a;
+      background: #18181b;
+    }
+
+    .drop-zone.dragover {
+      border-color: #ccff00;
+      background: rgba(204, 255, 0, 0.05);
+    }
+
+    .drop-zone-icon {
+      font-size: 3.5rem;
+      color: #52525b;
+      margin-bottom: 1rem;
+    }
+
+    .drop-zone-text {
+      color: #a1a1aa;
+      font-size: 1rem;
+    }
+
+    .drop-zone-hint {
+      color: #52525b;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+
+    .preview-container {
+      max-width: 360px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .preview-image {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 1rem;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .preview-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 2rem;
+      height: 2rem;
+      background: rgba(0, 0, 0, 0.7);
+      border: none;
+      border-radius: 50%;
+      color: #d4d4d8;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .remove-btn:hover {
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    /* Screen 3: Choose */
+    .choose-screen {
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+      padding-bottom: 120px;
+    }
+
+    .shoot-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .shoot-card {
+      background: #18181b;
+      border: 2px solid #27272a;
+      border-radius: 0.75rem;
+      padding: 1.25rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .shoot-card:hover {
+      border-color: #52525b;
+      background: #27272a;
+    }
+
+    .shoot-card.selected {
+      border-color: #ccff00;
+      background: rgba(204, 255, 0, 0.08);
+    }
+
+    .shoot-card-content {
+      flex: 1;
+    }
+
+    .shoot-card-title {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .shoot-card-desc {
+      font-size: 0.875rem;
+      color: #71717a;
+    }
+
+    .shoot-card-check {
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 2px solid #3f3f46;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-left: 1rem;
+      transition: all 0.2s;
+    }
+
+    .shoot-card.selected .shoot-card-check {
+      background: #ccff00;
+      border-color: #ccff00;
+    }
+
+    .shoot-card.selected .shoot-card-check::after {
+      content: '✓';
+      color: #09090b;
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+
+    .fixed-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1.25rem;
+      background: rgba(9, 9, 11, 0.95);
+      border-top: 1px solid #27272a;
+      backdrop-filter: blur(8px);
+    }
+
+    .fixed-footer .btn-primary {
+      max-width: 600px;
+      margin: 0 auto;
+      display: block;
+    }
+
+    /* Screen 4: Results */
+    .results-screen {
+      padding: 2rem;
+      max-width: 600px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .results-badge {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.375rem 0.75rem;
+      border-radius: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .contact-sheet {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.375rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0.75rem;
+      overflow: hidden;
+    }
+
+    .contact-frame {
+      aspect-ratio: 1;
+      background: #27272a;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .btn-secondary {
+      background: #27272a;
+      color: #fafafa;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background: #3f3f46;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .btn-link {
+      background: none;
+      border: none;
+      color: #71717a;
+      font-size: 0.9375rem;
+      padding: 0.75rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .btn-link:hover {
+      color: #d4d4d8;
+    }
+
+    .btn-primary.copied {
+      background: #22c55e;
+    }
+
+    /* Advanced section (collapsed prompt) */
+    .advanced-section {
+      margin-top: 1.5rem;
+      border-top: 1px solid #27272a;
+      padding-top: 1rem;
+    }
+
+    .advanced-toggle {
+      background: none;
+      border: none;
+      color: #52525b;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      width: 100%;
+    }
+
+    .advanced-toggle:hover {
+      color: #71717a;
+    }
+
+    .advanced-toggle .arrow {
+      transition: transform 0.2s;
+    }
+
+    .advanced-toggle.open .arrow {
+      transform: rotate(90deg);
+    }
+
+    .advanced-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+
+    .advanced-content.open {
+      display: block;
+    }
+
+    .prompt-box {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .prompt-box pre {
+      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+      font-size: 0.6875rem;
+      color: #71717a;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .btn-small {
+      background: #27272a;
+      color: #a1a1aa;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-small:hover {
+      background: #3f3f46;
+      color: #fafafa;
+    }
+
+    .btn-small.copied {
+      background: #22c55e;
+      color: #09090b;
+    }
+
+    /* Hidden file input */
+    #fileInput {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Screen 1: Landing -->
+  <div id="screen-landing" class="screen landing active">
+    <h1>12 pro photos.<br>10 seconds.</h1>
+    <p class="subtitle">Upload one selfie. Get a full photoshoot. No photographer needed.</p>
+    <div class="cta-stack">
+      <button class="btn-primary" onclick="instantHeadshots()">Instant Headshots</button>
+      <button class="btn-ghost" onclick="goToUpload()">Choose shoot type</button>
+    </div>
+    <p class="trust-line">No signup required</p>
+  </div>
+
+  <!-- Screen 2: Upload -->
+  <div id="screen-upload" class="screen">
+    <div class="upload-screen">
+      <button class="back-btn" onclick="goToLanding()">&larr; Back</button>
+      <h2 class="screen-title">Upload your photo</h2>
+      <p class="screen-subtitle">We'll keep your face consistent across all shots</p>
+
+      <div id="drop-zone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
+        <div class="drop-zone-icon">+</div>
+        <p class="drop-zone-text">Drop image here</p>
+        <p class="drop-zone-hint">or tap to browse</p>
+      </div>
+
+      <div id="preview-container" class="preview-container" style="display: none;">
+        <div class="preview-image">
+          <img id="preview-img" src="" alt="Your photo">
+          <button class="remove-btn" onclick="removeImage()">&times;</button>
+        </div>
+        <button class="btn-primary" onclick="goToChoose()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+
+  <!-- Screen 3: Choose Shoot Type -->
+  <div id="screen-choose" class="screen">
+    <div class="choose-screen">
+      <button class="back-btn" onclick="goToUpload()">&larr; Back</button>
+      <h2 class="screen-title">Pick your shoot</h2>
+      <p class="screen-subtitle">Tap one</p>
+
+      <div id="shoot-grid" class="shoot-grid"></div>
+    </div>
+
+    <div id="generate-footer" class="fixed-footer" style="display: none;">
+      <button id="generate-btn" class="btn-primary" onclick="generateShoot()">Create Photos</button>
+    </div>
+  </div>
+
+  <!-- Screen 4: Results -->
+  <div id="screen-results" class="screen">
+    <div class="results-screen">
+      <div class="results-header">
+        <div class="results-badge">Ready</div>
+        <h2 id="results-title" class="screen-title">Your photos</h2>
+      </div>
+
+      <div id="contact-sheet" class="contact-sheet"></div>
+
+      <div class="action-buttons">
+        <button id="download-btn" class="btn-primary" onclick="downloadPhotos()">Download Photos</button>
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="regenerate()">Regenerate</button>
+          <button class="btn-secondary" onclick="tryAnother()">Different Style</button>
+        </div>
+        <button class="btn-link" onclick="startOver()">Start over</button>
+      </div>
+
+      <!-- Hidden prompt for power users -->
+      <div class="advanced-section">
+        <button class="advanced-toggle" onclick="toggleAdvanced()">
+          <span class="arrow">▸</span>
+          <span>Advanced: View prompt</span>
+        </button>
+        <div id="advanced-content" class="advanced-content">
+          <div class="prompt-box">
+            <pre id="prompt-text"></pre>
+          </div>
+          <button id="copy-btn" class="btn-small" onclick="copyPrompt()">Copy prompt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 5 CORE SHOOT TYPES - focused, no overwhelm
+    const SHOOT_TYPES = [
+      {
+        id: "headshots",
+        name: "Professional Headshots",
+        desc: "6 expressions, studio quality",
+        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the face.
+
+Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
+Resolution: 8K. Background: clean white studio.
+
+FRAMES:
+1. Confident smile, direct eye contact
+2. Friendly approachable expression
+3. Serious professional look
+4. Slight smile, relaxed
+5. Thoughtful, looking slightly off-camera
+6. Warm genuine smile
+
+CONSTRAINTS:
+- Exact 3x2 grid, exactly 6 frames
+- All frames identical in size and perfectly aligned
+- Thin 2px grid dividers
+- Same face, proportions, skin texture, and lighting across all frames
+- No visible text, labels, numbers, captions, or overlays
+- Professional headshot framing (head and shoulders)`
+      },
+      {
+        id: "fashion",
+        name: "Fashion Poses",
+        desc: "Full-body editorial shots",
+        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
+
+Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
+Resolution: 8K. Full-body fashion poses. Background: white seamless.
+
+FRAMES:
+1. Arms at sides, weight on left leg, confident
+2. Hand on hip, slight body turn
+3. Walking stance, natural motion captured
+4. Crossed arms, powerful posture
+5. Leaning stance, relaxed editorial
+6. Profile stance, dramatic side view
+
+CONSTRAINTS:
+- Exact 3x2 grid, exactly 6 frames
+- All frames identical in size and perfectly aligned
+- Same body proportions and lighting
+- Full body visible in each frame
+- No visible text, labels, or overlays`
+      },
+      {
+        id: "street",
+        name: "Street Style",
+        desc: "Urban flash photography",
+        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
+
+Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
+Resolution: 8K. Street photography with flash.
+
+FRAMES:
+1. Direct flash, frozen in motion
+2. Side lighting, dramatic shadows
+3. Backlit with rim light glow
+4. Hard flash, high contrast look
+5. Candid walking shot
+6. Night street, flash fill
+
+CONSTRAINTS:
+- Exact 3x2 grid, exactly 6 frames
+- Street photography aesthetic
+- Flash photography lighting throughout
+- Same person identity in all frames
+- No drift in facial features`
+      },
+      {
+        id: "product",
+        name: "Product Shots",
+        desc: "Clean studio product photos",
+        prompt: `Use the uploaded PRODUCT/CHARACTER REFERENCE IMAGE.
+
+Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
+Resolution: 8K. Clean product photography.
+
+FRAMES:
+1. Hero shot, clean white background
+2. 45-degree angle view
+3. Detail close-up shot
+4. Lifestyle context shot
+5. Scale reference shot
+6. Alternative angle view
+
+CONSTRAINTS:
+- Exact 3x2 grid, exactly 6 frames
+- Product consistency maintained throughout
+- Clean, professional lighting
+- No visible text or overlays
+- Same product in all frames`
+      },
+      {
+        id: "studio",
+        name: "Studio Portraits",
+        desc: "Classic lighting setups",
+        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
+
+Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
+Resolution: 8K. Classic studio portrait lighting.
+
+FRAMES:
+1. Rembrandt lighting, classic portrait
+2. Butterfly lighting, glamour style
+3. Split lighting, dramatic half-face
+4. Rim lighting, silhouette edge glow
+5. Broad lighting, open and friendly
+6. Loop lighting, soft natural shadows
+
+CONSTRAINTS:
+- Exact 3x2 grid, exactly 6 frames
+- Professional studio lighting setups
+- Same person throughout all frames
+- Consistent skin tone and features
+- No visible text or overlays`
+      }
+    ];
+
+    // State
+    let uploadedImage = null;
+    let selectedShootType = null;
+    let compiledPrompt = '';
+    let isInstantMode = false;
+
+    // Screen navigation
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + screenId).classList.add('active');
+    }
+
+    function goToLanding() {
+      isInstantMode = false;
+      showScreen('landing');
+    }
+
+    function goToUpload() {
+      showScreen('upload');
+      updateUploadUI();
+    }
+
+    function goToChoose() {
+      if (!uploadedImage) return;
+      showScreen('choose');
+      renderShootGrid();
+    }
+
+    function startOver() {
+      uploadedImage = null;
+      selectedShootType = null;
+      compiledPrompt = '';
+      isInstantMode = false;
+      showScreen('landing');
+    }
+
+    // Instant headshots (skip choose screen)
+    function instantHeadshots() {
+      isInstantMode = true;
+      selectedShootType = 'headshots';
+      goToUpload();
+    }
+
+    // Upload handling
+    function updateUploadUI() {
+      const dropZone = document.getElementById('drop-zone');
+      const previewContainer = document.getElementById('preview-container');
+      const previewImg = document.getElementById('preview-img');
+
+      if (uploadedImage) {
+        dropZone.style.display = 'none';
+        previewContainer.style.display = 'block';
+        previewImg.src = uploadedImage;
+
+        // Update continue button based on mode
+        const continueBtn = previewContainer.querySelector('.btn-primary');
+        if (isInstantMode) {
+          continueBtn.textContent = 'Create Headshots';
+          continueBtn.onclick = () => generateShoot();
+        } else {
+          continueBtn.textContent = 'Continue';
+          continueBtn.onclick = () => goToChoose();
+        }
+      } else {
+        dropZone.style.display = 'flex';
+        previewContainer.style.display = 'none';
+      }
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          uploadedImage = e.target.result;
+          updateUploadUI();
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function removeImage() {
+      uploadedImage = null;
+      document.getElementById('fileInput').value = '';
+      updateUploadUI();
+    }
+
+    // Drag and drop
+    const dropZone = document.getElementById('drop-zone');
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          uploadedImage = ev.target.result;
+          updateUploadUI();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Shoot type selection
+    function renderShootGrid() {
+      const grid = document.getElementById('shoot-grid');
+      grid.innerHTML = SHOOT_TYPES.map(type => `
+        <div class="shoot-card ${selectedShootType === type.id ? 'selected' : ''}"
+             onclick="selectShootType('${type.id}')">
+          <div class="shoot-card-content">
+            <div class="shoot-card-title">${type.name}</div>
+            <div class="shoot-card-desc">${type.desc}</div>
+          </div>
+          <div class="shoot-card-check"></div>
+        </div>
+      `).join('');
+
+      updateGenerateButton();
+    }
+
+    function selectShootType(id) {
+      selectedShootType = id;
+      renderShootGrid();
+    }
+
+    function updateGenerateButton() {
+      const footer = document.getElementById('generate-footer');
+      footer.style.display = selectedShootType ? 'block' : 'none';
+    }
+
+    // Generate
+    function generateShoot() {
+      if (!selectedShootType || !uploadedImage) return;
+
+      const btn = isInstantMode
+        ? document.querySelector('#preview-container .btn-primary')
+        : document.getElementById('generate-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      // Compile prompt
+      const shootType = SHOOT_TYPES.find(t => t.id === selectedShootType);
+      compiledPrompt = shootType.prompt;
+
+      // Simulate generation
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = isInstantMode ? 'Create Headshots' : 'Create Photos';
+        showResults();
+      }, 1500);
+    }
+
+    function showResults() {
+      const shootType = SHOOT_TYPES.find(t => t.id === selectedShootType);
+
+      document.getElementById('results-title').textContent = shootType.name;
+      document.getElementById('prompt-text').textContent = compiledPrompt;
+
+      // Render contact sheet with uploaded image
+      const sheet = document.getElementById('contact-sheet');
+      sheet.innerHTML = Array(6).fill(0).map((_, i) => `
+        <div class="contact-frame">
+          <img src="${uploadedImage}" alt="Photo ${i + 1}">
+        </div>
+      `).join('');
+
+      // Reset advanced section
+      document.getElementById('advanced-content').classList.remove('open');
+      document.querySelector('.advanced-toggle').classList.remove('open');
+
+      showScreen('results');
+    }
+
+    function regenerate() {
+      // Re-run generation with same settings
+      const btn = document.getElementById('download-btn');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Download Photos';
+      }, 1500);
+    }
+
+    function tryAnother() {
+      selectedShootType = null;
+      isInstantMode = false;
+      showScreen('choose');
+      renderShootGrid();
+    }
+
+    // Download (simulated - in real app would trigger actual download)
+    function downloadPhotos() {
+      const btn = document.getElementById('download-btn');
+      btn.textContent = 'Preparing...';
+      btn.disabled = true;
+
+      // In a real app, this would trigger download
+      // For demo, we copy the prompt since that's the actual output
+      setTimeout(async () => {
+        try {
+          await navigator.clipboard.writeText(compiledPrompt);
+          btn.textContent = 'Copied to clipboard!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Download Photos';
+            btn.classList.remove('copied');
+            btn.disabled = false;
+          }, 2000);
+        } catch (err) {
+          btn.textContent = 'Download Photos';
+          btn.disabled = false;
+        }
+      }, 500);
+    }
+
+    // Advanced section toggle
+    function toggleAdvanced() {
+      const toggle = document.querySelector('.advanced-toggle');
+      const content = document.getElementById('advanced-content');
+      toggle.classList.toggle('open');
+      content.classList.toggle('open');
+    }
+
+    // Copy prompt (for power users)
+    async function copyPrompt() {
+      const btn = document.getElementById('copy-btn');
+      try {
+        await navigator.clipboard.writeText(compiledPrompt);
+        btn.textContent = 'Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy prompt';
+          btn.classList.remove('copied');
+        }, 2000);
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+    }
+  </script>
+</body>
+</html>
