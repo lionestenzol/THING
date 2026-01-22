@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Same character. Every shoot. Guaranteed.</title>
+  <title>12 Pro Photos in 10 Seconds</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,28 +34,38 @@
     }
 
     .landing h1 {
-      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      font-size: clamp(2.5rem, 8vw, 4rem);
       font-weight: 700;
       line-height: 1.1;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
 
     .landing .subtitle {
-      font-size: clamp(1rem, 3vw, 1.5rem);
+      font-size: clamp(1rem, 3vw, 1.25rem);
       color: #a1a1aa;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
+      max-width: 400px;
+    }
+
+    .cta-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+      max-width: 320px;
     }
 
     .btn-primary {
       background: #ccff00;
       color: #09090b;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
       font-weight: 700;
-      padding: 1.25rem 3rem;
+      padding: 1.125rem 2.5rem;
       border: none;
       border-radius: 0.75rem;
       cursor: pointer;
       transition: all 0.2s;
+      width: 100%;
     }
 
     .btn-primary:hover {
@@ -69,31 +79,29 @@
       transform: none;
     }
 
-    .presets {
-      margin-top: 4rem;
+    .btn-ghost {
+      background: transparent;
+      color: #a1a1aa;
+      font-size: 1rem;
+      font-weight: 500;
+      padding: 1rem 2rem;
+      border: 1px solid #3f3f46;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      width: 100%;
     }
 
-    .presets-label {
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #52525b;
-      margin-bottom: 1rem;
+    .btn-ghost:hover {
+      background: #18181b;
+      border-color: #52525b;
+      color: #fafafa;
     }
 
-    .preset-tags {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .preset-tag {
+    .trust-line {
+      margin-top: 3rem;
       font-size: 0.875rem;
-      color: #71717a;
-      padding: 0.5rem 1rem;
-      border: 1px solid #27272a;
-      border-radius: 2rem;
+      color: #52525b;
     }
 
     /* Screen 2: Upload */
@@ -102,6 +110,9 @@
       max-width: 600px;
       margin: 0 auto;
       width: 100%;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .back-btn {
@@ -112,6 +123,7 @@
       cursor: pointer;
       margin-bottom: 2rem;
       padding: 0.5rem 0;
+      text-align: left;
     }
 
     .back-btn:hover {
@@ -119,15 +131,22 @@
     }
 
     .screen-title {
-      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      font-size: clamp(1.5rem, 5vw, 2rem);
       font-weight: 700;
       text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .screen-subtitle {
+      text-align: center;
+      color: #71717a;
       margin-bottom: 2rem;
+      font-size: 1rem;
     }
 
     .drop-zone {
       aspect-ratio: 1;
-      max-width: 400px;
+      max-width: 360px;
       margin: 0 auto 2rem;
       border: 2px dashed #3f3f46;
       border-radius: 1rem;
@@ -150,14 +169,14 @@
     }
 
     .drop-zone-icon {
-      font-size: 4rem;
+      font-size: 3.5rem;
       color: #52525b;
       margin-bottom: 1rem;
     }
 
     .drop-zone-text {
       color: #a1a1aa;
-      font-size: 1.125rem;
+      font-size: 1rem;
     }
 
     .drop-zone-hint {
@@ -167,8 +186,9 @@
     }
 
     .preview-container {
-      max-width: 400px;
+      max-width: 360px;
       margin: 0 auto;
+      width: 100%;
     }
 
     .preview-image {
@@ -187,15 +207,15 @@
 
     .remove-btn {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 2.5rem;
-      height: 2.5rem;
+      top: 0.75rem;
+      right: 0.75rem;
+      width: 2rem;
+      height: 2rem;
       background: rgba(0, 0, 0, 0.7);
       border: none;
       border-radius: 50%;
       color: #d4d4d8;
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -209,33 +229,29 @@
     /* Screen 3: Choose */
     .choose-screen {
       padding: 2rem;
-      max-width: 900px;
+      max-width: 600px;
       margin: 0 auto;
       width: 100%;
       padding-bottom: 120px;
     }
 
-    .screen-subtitle {
-      text-align: center;
-      color: #71717a;
-      margin-bottom: 2rem;
-    }
-
     .shoot-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-      margin-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
     .shoot-card {
       background: #18181b;
       border: 2px solid #27272a;
       border-radius: 0.75rem;
-      padding: 1.5rem;
+      padding: 1.25rem 1.5rem;
       cursor: pointer;
       transition: all 0.2s;
       text-align: left;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .shoot-card:hover {
@@ -248,15 +264,44 @@
       background: rgba(204, 255, 0, 0.08);
     }
 
+    .shoot-card-content {
+      flex: 1;
+    }
+
     .shoot-card-title {
-      font-size: 1.125rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+      font-size: 1.0625rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
     }
 
     .shoot-card-desc {
       font-size: 0.875rem;
-      color: #a1a1aa;
+      color: #71717a;
+    }
+
+    .shoot-card-check {
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 2px solid #3f3f46;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-left: 1rem;
+      transition: all 0.2s;
+    }
+
+    .shoot-card.selected .shoot-card-check {
+      background: #ccff00;
+      border-color: #ccff00;
+    }
+
+    .shoot-card.selected .shoot-card-check::after {
+      content: '✓';
+      color: #09090b;
+      font-size: 0.875rem;
+      font-weight: 700;
     }
 
     .fixed-footer {
@@ -264,15 +309,14 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 1.5rem;
+      padding: 1.25rem;
       background: rgba(9, 9, 11, 0.95);
       border-top: 1px solid #27272a;
       backdrop-filter: blur(8px);
     }
 
     .fixed-footer .btn-primary {
-      width: 100%;
-      max-width: 900px;
+      max-width: 600px;
       margin: 0 auto;
       display: block;
     }
@@ -280,30 +324,41 @@
     /* Screen 4: Results */
     .results-screen {
       padding: 2rem;
-      max-width: 900px;
+      max-width: 600px;
       margin: 0 auto;
       width: 100%;
     }
 
-    .results-panel {
-      background: #18181b;
-      border: 1px solid #27272a;
-      border-radius: 1rem;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
+    .results-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .results-badge {
+      display: inline-block;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.375rem 0.75rem;
+      border-radius: 2rem;
+      margin-bottom: 0.75rem;
     }
 
     .contact-sheet {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
+      gap: 0.375rem;
       margin-bottom: 1.5rem;
+      border-radius: 0.75rem;
+      overflow: hidden;
     }
 
     .contact-frame {
       aspect-ratio: 1;
       background: #27272a;
-      border-radius: 0.5rem;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -314,28 +369,6 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0.6;
-    }
-
-    .contact-frame span {
-      color: #52525b;
-      font-size: 0.75rem;
-    }
-
-    .prompt-preview {
-      background: #09090b;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .prompt-preview pre {
-      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-      font-size: 0.75rem;
-      color: #a1a1aa;
-      white-space: pre-wrap;
-      word-break: break-word;
     }
 
     .action-buttons {
@@ -370,8 +403,8 @@
       background: none;
       border: none;
       color: #71717a;
-      font-size: 1rem;
-      padding: 1rem;
+      font-size: 0.9375rem;
+      padding: 0.75rem;
       cursor: pointer;
       transition: color 0.2s;
     }
@@ -384,29 +417,85 @@
       background: #22c55e;
     }
 
-    /* Generating state */
-    .generating {
-      text-align: center;
-      padding: 4rem 2rem;
+    /* Advanced section (collapsed prompt) */
+    .advanced-section {
+      margin-top: 1.5rem;
+      border-top: 1px solid #27272a;
+      padding-top: 1rem;
     }
 
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 3px solid #27272a;
-      border-top-color: #ccff00;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1.5rem;
+    .advanced-toggle {
+      background: none;
+      border: none;
+      color: #52525b;
+      font-size: 0.8125rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      width: 100%;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .advanced-toggle:hover {
+      color: #71717a;
     }
 
-    .generating-text {
-      font-size: 1.25rem;
+    .advanced-toggle .arrow {
+      transition: transform 0.2s;
+    }
+
+    .advanced-toggle.open .arrow {
+      transform: rotate(90deg);
+    }
+
+    .advanced-content {
+      display: none;
+      margin-top: 0.75rem;
+    }
+
+    .advanced-content.open {
+      display: block;
+    }
+
+    .prompt-box {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .prompt-box pre {
+      font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+      font-size: 0.6875rem;
+      color: #71717a;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .btn-small {
+      background: #27272a;
       color: #a1a1aa;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-small:hover {
+      background: #3f3f46;
+      color: #fafafa;
+    }
+
+    .btn-small.copied {
+      background: #22c55e;
+      color: #09090b;
     }
 
     /* Hidden file input */
@@ -419,37 +508,34 @@
 
   <!-- Screen 1: Landing -->
   <div id="screen-landing" class="screen landing active">
-    <h1>Same character.<br>Every shoot.<br>Guaranteed.</h1>
-    <p class="subtitle">Generate a full professional photoshoot in 10 seconds.</p>
-    <button class="btn-primary" onclick="goToUpload()">Upload Character</button>
-    <div class="presets">
-      <p class="presets-label">Popular shoot types</p>
-      <div class="preset-tags">
-        <span class="preset-tag">Headshots</span>
-        <span class="preset-tag">Fashion Poses</span>
-        <span class="preset-tag">Product Shots</span>
-      </div>
+    <h1>12 pro photos.<br>10 seconds.</h1>
+    <p class="subtitle">Upload one selfie. Get a full photoshoot. No photographer needed.</p>
+    <div class="cta-stack">
+      <button class="btn-primary" onclick="instantHeadshots()">Instant Headshots</button>
+      <button class="btn-ghost" onclick="goToUpload()">Choose shoot type</button>
     </div>
+    <p class="trust-line">No signup required</p>
   </div>
 
   <!-- Screen 2: Upload -->
   <div id="screen-upload" class="screen">
     <div class="upload-screen">
       <button class="back-btn" onclick="goToLanding()">&larr; Back</button>
-      <h2 class="screen-title">Upload your character</h2>
+      <h2 class="screen-title">Upload your photo</h2>
+      <p class="screen-subtitle">We'll keep your face consistent across all shots</p>
 
       <div id="drop-zone" class="drop-zone" onclick="document.getElementById('fileInput').click()">
         <div class="drop-zone-icon">+</div>
         <p class="drop-zone-text">Drop image here</p>
-        <p class="drop-zone-hint">or click to browse</p>
+        <p class="drop-zone-hint">or tap to browse</p>
       </div>
 
       <div id="preview-container" class="preview-container" style="display: none;">
         <div class="preview-image">
-          <img id="preview-img" src="" alt="Uploaded character">
+          <img id="preview-img" src="" alt="Your photo">
           <button class="remove-btn" onclick="removeImage()">&times;</button>
         </div>
-        <button class="btn-primary" style="width: 100%;" onclick="goToChoose()">Continue</button>
+        <button class="btn-primary" onclick="goToChoose()">Continue</button>
       </div>
     </div>
   </div>
@@ -460,384 +546,192 @@
   <div id="screen-choose" class="screen">
     <div class="choose-screen">
       <button class="back-btn" onclick="goToUpload()">&larr; Back</button>
-      <h2 class="screen-title">Choose your shoot type</h2>
-      <p class="screen-subtitle">Tap one to select</p>
+      <h2 class="screen-title">Pick your shoot</h2>
+      <p class="screen-subtitle">Tap one</p>
 
       <div id="shoot-grid" class="shoot-grid"></div>
     </div>
 
     <div id="generate-footer" class="fixed-footer" style="display: none;">
-      <button id="generate-btn" class="btn-primary" onclick="generateShoot()">Generate Shoot</button>
+      <button id="generate-btn" class="btn-primary" onclick="generateShoot()">Create Photos</button>
     </div>
   </div>
 
   <!-- Screen 4: Results -->
   <div id="screen-results" class="screen">
     <div class="results-screen">
-      <h2 id="results-title" class="screen-title">Your Shoot</h2>
-      <p class="screen-subtitle">Your prompt is ready</p>
-
-      <div class="results-panel">
-        <div id="contact-sheet" class="contact-sheet"></div>
-        <div class="prompt-preview">
-          <pre id="prompt-text"></pre>
-        </div>
+      <div class="results-header">
+        <div class="results-badge">Ready</div>
+        <h2 id="results-title" class="screen-title">Your photos</h2>
       </div>
 
+      <div id="contact-sheet" class="contact-sheet"></div>
+
       <div class="action-buttons">
-        <button id="copy-btn" class="btn-primary" onclick="copyPrompt()">Copy Prompt</button>
+        <button id="download-btn" class="btn-primary" onclick="downloadPhotos()">Download Photos</button>
         <div class="btn-row">
           <button class="btn-secondary" onclick="regenerate()">Regenerate</button>
-          <button class="btn-secondary" onclick="tryAnother()">Try Another Style</button>
+          <button class="btn-secondary" onclick="tryAnother()">Different Style</button>
         </div>
-        <button class="btn-link" onclick="startOver()">Start Over</button>
+        <button class="btn-link" onclick="startOver()">Start over</button>
+      </div>
+
+      <!-- Hidden prompt for power users -->
+      <div class="advanced-section">
+        <button class="advanced-toggle" onclick="toggleAdvanced()">
+          <span class="arrow">▸</span>
+          <span>Advanced: View prompt</span>
+        </button>
+        <div id="advanced-content" class="advanced-content">
+          <div class="prompt-box">
+            <pre id="prompt-text"></pre>
+          </div>
+          <button id="copy-btn" class="btn-small" onclick="copyPrompt()">Copy prompt</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Shoot types with human-friendly names
+    // 5 CORE SHOOT TYPES - focused, no overwhelm
     const SHOOT_TYPES = [
       {
-        id: "facial_pose_primary_moods",
-        name: "6 Professional Headshots",
-        desc: "Professional headshot grid with 6 expressions",
+        id: "headshots",
+        name: "Professional Headshots",
+        desc: "6 expressions, studio quality",
         prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the face.
 
 Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
 Resolution: 8K. Background: clean white studio.
 
 FRAMES:
-1. Pure joy, wide genuine smile with eyes crinkled
-2. Deep sadness, eyes downcast and heavy lids
-3. Intense anger, furrowed brow and clenched jaw
-4. Shock and wonder, raised brows and open mouth
-5. Subtle contempt, asymmetrical lip curl
-6. Fearful dread, wide eyes and tense expression
+1. Confident smile, direct eye contact
+2. Friendly approachable expression
+3. Serious professional look
+4. Slight smile, relaxed
+5. Thoughtful, looking slightly off-camera
+6. Warm genuine smile
 
 CONSTRAINTS:
 - Exact 3x2 grid, exactly 6 frames
 - All frames identical in size and perfectly aligned
 - Thin 2px grid dividers
 - Same face, proportions, skin texture, and lighting across all frames
-- No visible text, labels, numbers, captions, or overlays`
+- No visible text, labels, numbers, captions, or overlays
+- Professional headshot framing (head and shoulders)`
       },
       {
-        id: "facial_pose_bizarre_expressions",
-        name: "Expressive Character Shots",
-        desc: "Bold, editorial facial expressions",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Extreme facial close-ups. Background: white studio.
-
-FRAMES:
-1. Asymmetrical jaw shift with mouth distortion
-2. Scrunched nose with compressed facial features
-3. One eye open wide, one eye tightly closed
-4. Inflated cheeks with eyes rolled upward
-5. Frozen unnatural smile showing teeth
-6. Lower lip pulled upward covering the upper lip
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- All frames identical in size and perfectly aligned
-- Thin 2px grid dividers
-- Same face identity and lighting across all frames
-- No visible text, labels, numbers, captions, or overlays`
-      },
-      {
-        id: "facial_pose_ocular_macro",
-        name: "Eye Detail Close-ups",
-        desc: "Extreme close-up eye photography",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Extreme eye close-ups. Background: neutral.
-
-FRAMES:
-1. Direct gaze, both eyes sharp focus
-2. Side glance, iris detail visible
-3. Looking upward, sclera visible
-4. Half-closed, dreamy expression
-5. Wide open, surprised look
-6. Squinting, intense focus
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Same eye color and detail across all frames
-- Macro-level clarity on iris texture
-- No visible text or overlays`
-      },
-      {
-        id: "anatomy_pose_fashion_stances",
-        name: "Full-Body Fashion Shoot",
-        desc: "Classic fashion model poses",
+        id: "fashion",
+        name: "Fashion Poses",
+        desc: "Full-body editorial shots",
         prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
 
 Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
 Resolution: 8K. Full-body fashion poses. Background: white seamless.
 
 FRAMES:
-1. Arms at sides, weight on left leg
+1. Arms at sides, weight on left leg, confident
 2. Hand on hip, slight body turn
-3. Walking stance, natural motion
-4. Crossed arms, confident posture
-5. Leaning stance, relaxed position
-6. Profile stance, side view
+3. Walking stance, natural motion captured
+4. Crossed arms, powerful posture
+5. Leaning stance, relaxed editorial
+6. Profile stance, dramatic side view
 
 CONSTRAINTS:
 - Exact 3x2 grid, exactly 6 frames
 - All frames identical in size and perfectly aligned
 - Same body proportions and lighting
+- Full body visible in each frame
 - No visible text, labels, or overlays`
       },
       {
-        id: "anatomy_pose_floating_poses",
-        name: "Floating Suspended Poses",
-        desc: "Weightless, suspended body shots",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Floating/suspended poses. Background: gradient or solid.
-
-FRAMES:
-1. Fetal position, floating in space
-2. Arms outstretched, horizontal float
-3. Upside down, graceful descent
-4. Curled backward, zero gravity
-5. Reaching upward, ascending
-6. Relaxed float, eyes closed
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Consistent lighting and body proportions
-- Believable weightlessness in each pose
-- No visible text or overlays`
-      },
-      {
-        id: "anatomy_pose_floor_poses",
-        name: "Floor & Reclined Poses",
-        desc: "Elegant floor and reclined poses",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Floor and reclined poses. Background: white seamless.
-
-FRAMES:
-1. Lying flat, looking up
-2. Propped on elbows, relaxed
-3. Side lying, head on arm
-4. Seated on floor, legs extended
-5. Curled position, intimate
-6. Sprawled, editorial style
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Same body proportions throughout
-- Consistent lighting from above
-- No visible text or overlays`
-      },
-      {
-        id: "anatomy_pose_hand_gestures",
-        name: "Hand Detail Shots",
-        desc: "Detailed hand and gesture shots",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Hand gesture close-ups. Background: neutral.
-
-FRAMES:
-1. Open palm, fingers spread
-2. Closed fist, strong gesture
-3. Pointing finger, directive
-4. Peace sign, relaxed
-5. Hand on face, thoughtful
-6. Interlocked fingers, contemplative
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Same skin tone and hand proportions
-- Sharp focus on hand details
-- No visible text or overlays`
-      },
-      {
-        id: "apparel_textile_luxury_editorial",
-        name: "Luxury Fashion Editorial",
-        desc: "High-end fashion garment focus",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Luxury fashion editorial.
-
-FRAMES:
-1. Structured blazer, clean lines
-2. Flowing silk dress, fabric drape
-3. Tailored pants, precise fit
-4. Cashmere sweater, soft texture
-5. Leather jacket, material detail
-6. Evening gown, dramatic silhouette
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Garment details preserved
-- Consistent lighting and color
-- No distortion or drift`
-      },
-      {
-        id: "apparel_textile_street_utility",
-        name: "Streetwear Lookbook",
-        desc: "Urban streetwear aesthetic",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Street utility fashion.
-
-FRAMES:
-1. Oversized hoodie, relaxed fit
-2. Cargo pants, functional pockets
-3. Bomber jacket, urban style
-4. Sneakers focus, street level
-5. Layered look, mixed textures
-6. Full outfit, environmental
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Street photography aesthetic
-- Consistent character identity
-- No visible text or overlays`
-      },
-      {
-        id: "product_macro",
-        name: "Product Hero Shots",
-        desc: "Product interaction close-ups",
-        prompt: `Use the uploaded PRODUCT REFERENCE IMAGE as the exact product identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Macro product shots.
-
-FRAMES:
-1. Product hero shot, clean background
-2. Texture detail close-up
-3. Material surface macro
-4. Brand/logo element detail
-5. Functional feature highlight
-6. Product in use context
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Product consistency maintained
-- High detail macro clarity
-- No product drift or distortion`
-      },
-      {
-        id: "cinematography_essential_angles",
-        name: "Classic Studio Angles",
-        desc: "Foundational camera angles",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Classic cinematography angles.
-
-FRAMES:
-1. Eye level, neutral angle
-2. Low angle, powerful perspective
-3. High angle, diminutive effect
-4. Dutch angle, dynamic tilt
-5. Over-the-shoulder framing
-6. Close-up, intimate portrait
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Same character in all frames
-- Professional studio lighting
-- No visible text or overlays`
-      },
-      {
-        id: "cinematography_kinetic_flash",
-        name: "Motion Flash Shoot",
-        desc: "Frozen motion with flash",
-        prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
-
-Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Kinetic flash photography.
-
-FRAMES:
-1. Jump frozen mid-air
-2. Hair whip, motion freeze
-3. Fabric flow, frozen movement
-4. Running stance, flash freeze
-5. Spin captured, dress flare
-6. Dynamic gesture, flash pop
-
-CONSTRAINTS:
-- Exact 3x2 grid, exactly 6 frames
-- Flash-frozen motion in each
-- Same character identity
-- Sharp focus despite motion`
-      },
-      {
-        id: "cinematography_street_flash",
-        name: "Street Style Flash",
-        desc: "Gritty street flash aesthetic",
+        id: "street",
+        name: "Street Style",
+        desc: "Urban flash photography",
         prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
 
 Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
 Resolution: 8K. Street photography with flash.
 
 FRAMES:
-1. Direct flash, frozen motion
+1. Direct flash, frozen in motion
 2. Side lighting, dramatic shadows
-3. Backlit silhouette with rim light
-4. Hard flash, high contrast
-5. Motion blur with flash freeze
+3. Backlit with rim light glow
+4. Hard flash, high contrast look
+5. Candid walking shot
 6. Night street, flash fill
 
 CONSTRAINTS:
 - Exact 3x2 grid, exactly 6 frames
 - Street photography aesthetic
-- Flash photography lighting
-- No drift in subject identity`
+- Flash photography lighting throughout
+- Same person identity in all frames
+- No drift in facial features`
       },
       {
-        id: "cinematography_editorial_set",
-        name: "Editorial Lighting Setup",
-        desc: "Controlled studio lighting",
+        id: "product",
+        name: "Product Shots",
+        desc: "Clean studio product photos",
+        prompt: `Use the uploaded PRODUCT/CHARACTER REFERENCE IMAGE.
+
+Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
+Resolution: 8K. Clean product photography.
+
+FRAMES:
+1. Hero shot, clean white background
+2. 45-degree angle view
+3. Detail close-up shot
+4. Lifestyle context shot
+5. Scale reference shot
+6. Alternative angle view
+
+CONSTRAINTS:
+- Exact 3x2 grid, exactly 6 frames
+- Product consistency maintained throughout
+- Clean, professional lighting
+- No visible text or overlays
+- Same product in all frames`
+      },
+      {
+        id: "studio",
+        name: "Studio Portraits",
+        desc: "Classic lighting setups",
         prompt: `Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.
 
 Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES).
-Resolution: 8K. Editorial studio lighting.
+Resolution: 8K. Classic studio portrait lighting.
 
 FRAMES:
 1. Rembrandt lighting, classic portrait
 2. Butterfly lighting, glamour style
 3. Split lighting, dramatic half-face
-4. Rim lighting, silhouette edge
-5. Broad lighting, open face
-6. Loop lighting, soft shadows
+4. Rim lighting, silhouette edge glow
+5. Broad lighting, open and friendly
+6. Loop lighting, soft natural shadows
 
 CONSTRAINTS:
 - Exact 3x2 grid, exactly 6 frames
-- Professional lighting setups
-- Same character throughout
+- Professional studio lighting setups
+- Same person throughout all frames
+- Consistent skin tone and features
 - No visible text or overlays`
       }
     ];
 
     // State
-    let currentScreen = 'landing';
     let uploadedImage = null;
     let selectedShootType = null;
     let compiledPrompt = '';
+    let isInstantMode = false;
 
     // Screen navigation
     function showScreen(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById('screen-' + screenId).classList.add('active');
-      currentScreen = screenId;
     }
 
     function goToLanding() {
+      isInstantMode = false;
       showScreen('landing');
     }
 
@@ -856,7 +750,15 @@ CONSTRAINTS:
       uploadedImage = null;
       selectedShootType = null;
       compiledPrompt = '';
+      isInstantMode = false;
       showScreen('landing');
+    }
+
+    // Instant headshots (skip choose screen)
+    function instantHeadshots() {
+      isInstantMode = true;
+      selectedShootType = 'headshots';
+      goToUpload();
     }
 
     // Upload handling
@@ -869,6 +771,16 @@ CONSTRAINTS:
         dropZone.style.display = 'none';
         previewContainer.style.display = 'block';
         previewImg.src = uploadedImage;
+
+        // Update continue button based on mode
+        const continueBtn = previewContainer.querySelector('.btn-primary');
+        if (isInstantMode) {
+          continueBtn.textContent = 'Create Headshots';
+          continueBtn.onclick = () => generateShoot();
+        } else {
+          continueBtn.textContent = 'Continue';
+          continueBtn.onclick = () => goToChoose();
+        }
       } else {
         dropZone.style.display = 'flex';
         previewContainer.style.display = 'none';
@@ -925,8 +837,11 @@ CONSTRAINTS:
       grid.innerHTML = SHOOT_TYPES.map(type => `
         <div class="shoot-card ${selectedShootType === type.id ? 'selected' : ''}"
              onclick="selectShootType('${type.id}')">
-          <div class="shoot-card-title">${type.name}</div>
-          <div class="shoot-card-desc">${type.desc}</div>
+          <div class="shoot-card-content">
+            <div class="shoot-card-title">${type.name}</div>
+            <div class="shoot-card-desc">${type.desc}</div>
+          </div>
+          <div class="shoot-card-check"></div>
         </div>
       `).join('');
 
@@ -945,11 +860,14 @@ CONSTRAINTS:
 
     // Generate
     function generateShoot() {
-      if (!selectedShootType) return;
+      if (!selectedShootType || !uploadedImage) return;
 
-      const btn = document.getElementById('generate-btn');
+      const btn = isInstantMode
+        ? document.querySelector('#preview-container .btn-primary')
+        : document.getElementById('generate-btn');
+
       btn.disabled = true;
-      btn.textContent = 'Generating...';
+      btn.textContent = 'Creating...';
 
       // Compile prompt
       const shootType = SHOOT_TYPES.find(t => t.id === selectedShootType);
@@ -958,7 +876,7 @@ CONSTRAINTS:
       // Simulate generation
       setTimeout(() => {
         btn.disabled = false;
-        btn.textContent = 'Generate Shoot';
+        btn.textContent = isInstantMode ? 'Create Headshots' : 'Create Photos';
         showResults();
       }, 1500);
     }
@@ -969,31 +887,74 @@ CONSTRAINTS:
       document.getElementById('results-title').textContent = shootType.name;
       document.getElementById('prompt-text').textContent = compiledPrompt;
 
-      // Render contact sheet
+      // Render contact sheet with uploaded image
       const sheet = document.getElementById('contact-sheet');
       sheet.innerHTML = Array(6).fill(0).map((_, i) => `
         <div class="contact-frame">
-          ${uploadedImage
-            ? `<img src="${uploadedImage}" alt="Frame ${i + 1}">`
-            : `<span>Frame ${i + 1}</span>`
-          }
+          <img src="${uploadedImage}" alt="Photo ${i + 1}">
         </div>
       `).join('');
+
+      // Reset advanced section
+      document.getElementById('advanced-content').classList.remove('open');
+      document.querySelector('.advanced-toggle').classList.remove('open');
 
       showScreen('results');
     }
 
     function regenerate() {
-      generateShoot();
+      // Re-run generation with same settings
+      const btn = document.getElementById('download-btn');
+      btn.disabled = true;
+      btn.textContent = 'Creating...';
+
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Download Photos';
+      }, 1500);
     }
 
     function tryAnother() {
       selectedShootType = null;
+      isInstantMode = false;
       showScreen('choose');
       renderShootGrid();
     }
 
-    // Copy prompt
+    // Download (simulated - in real app would trigger actual download)
+    function downloadPhotos() {
+      const btn = document.getElementById('download-btn');
+      btn.textContent = 'Preparing...';
+      btn.disabled = true;
+
+      // In a real app, this would trigger download
+      // For demo, we copy the prompt since that's the actual output
+      setTimeout(async () => {
+        try {
+          await navigator.clipboard.writeText(compiledPrompt);
+          btn.textContent = 'Copied to clipboard!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Download Photos';
+            btn.classList.remove('copied');
+            btn.disabled = false;
+          }, 2000);
+        } catch (err) {
+          btn.textContent = 'Download Photos';
+          btn.disabled = false;
+        }
+      }, 500);
+    }
+
+    // Advanced section toggle
+    function toggleAdvanced() {
+      const toggle = document.querySelector('.advanced-toggle');
+      const content = document.getElementById('advanced-content');
+      toggle.classList.toggle('open');
+      content.classList.toggle('open');
+    }
+
+    // Copy prompt (for power users)
     async function copyPrompt() {
       const btn = document.getElementById('copy-btn');
       try {
@@ -1001,7 +962,7 @@ CONSTRAINTS:
         btn.textContent = 'Copied!';
         btn.classList.add('copied');
         setTimeout(() => {
-          btn.textContent = 'Copy Prompt';
+          btn.textContent = 'Copy prompt';
           btn.classList.remove('copied');
         }, 2000);
       } catch (err) {
