@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Same character. Every shoot. Guaranteed.</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #09090b; color: #fafafa; min-height: 100vh; line-height: 1.5;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 3rem 1.5rem; }
+    header { text-align: center; margin-bottom: 3rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3.75rem); font-weight: 700; line-height: 1.1; margin-bottom: 0.5rem; }
+    .subtitle { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: #18181b; border: 1px solid #27272a; border-radius: 0.75rem; padding: 1.25rem; cursor: pointer; transition: all 0.2s; }
+    .card:hover { background: #27272a; border-color: #ccff00; transform: translateY(-2px); }
+    .card-tag { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: #a1a1aa; margin-bottom: 0.5rem; }
+    .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.375rem; line-height: 1.3; }
+    .card-desc { font-size: 0.8125rem; color: #a1a1aa; line-height: 1.4; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
+      align-items: center; justify-content: center; padding: 1.5rem; z-index: 50; overflow-y: auto; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #18181b; border: 1px solid #27272a; border-radius: 1rem; max-width: 56rem; width: 100%;
+      max-height: 90vh; display: flex; flex-direction: column; margin: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid #27272a; }
+    .modal-title { font-size: 1.25rem; font-weight: 600; }
+    .close-btn { background: transparent; border: none; color: #a1a1aa; font-size: 1.5rem; cursor: pointer; padding: 0.25rem 0.5rem; line-height: 1; }
+    .close-btn:hover { color: #fafafa; }
+    .modal-body { padding: 1.5rem; overflow-y: auto; flex: 1; }
+    .prompt-box { background: #09090b; border: 1px solid #27272a; border-radius: 0.5rem; padding: 1rem;
+      font-family: 'Courier New', monospace; font-size: 0.8125rem; color: #d4d4d8; white-space: pre-wrap;
+      line-height: 1.6; margin-bottom: 1rem; max-height: 50vh; overflow-y: auto; }
+    .modal-footer { padding: 1.5rem; border-top: 1px solid #27272a; }
+    .copy-btn { width: 100%; background: #ccff00; color: #09090b; border: none; border-radius: 0.5rem;
+      padding: 1rem 2rem; font-size: 1.125rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .copy-btn:hover { background: #b8e600; }
+    .copy-btn.copied { background: #22c55e; color: white; }
+    .stats { text-align: center; color: #71717a; font-size: 0.875rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Same character. Every shoot. Guaranteed.</h1>
+      <p class="subtitle">Ready-to-use visual systems</p>
+    </header>
+    <div class="grid" id="grid"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Compiled Prompt</h2>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="prompt-box" id="prompt"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy Full Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const GLOBAL_RULES = [
+  {
+    "id": "global_navigation_structure",
+    "category": "global_rules",
+    "label": "Primary Navigation",
+    "prompt_text": "The app homepage is a stack of category sections, each containing a grid of cards. Each category answers the question: 'What am I trying to create right now?' Examples include Anatomy & Poses, Facial Dynamics, Apparel & Textile, Macro & Product, and Cinematography.",
+    "constraints": [
+      "Categories are always visible on scroll",
+      "Categories are never hidden behind filters",
+      "Each category clearly shows how many modules it contains"
+    ]
+  },
+  {
+    "id": "global_grid_layout",
+    "category": "global_rules",
+    "label": "Grid Card Layout",
+    "prompt_text": "All prompts are displayed as grid cards. Think of each card as: 'One ready-to-use visual system.' The grid is designed to be the primary interaction model of the app.",
+    "constraints": [
+      "Cards are displayed in a clean, evenly spaced grid",
+      "All cards are equal size",
+      "The grid is easy to scan visually",
+      "Cards never overlap or resize unexpectedly"
+    ]
+  },
+  {
+    "id": "global_card_content",
+    "category": "global_rules",
+    "label": "Card Content",
+    "prompt_text": "Each grid card contains a Category Tag, Prompt Name, Short Description, and a Copy Icon. Descriptions explain what the user will get, avoid technical jargon, and use simple, visual language.",
+    "constraints": [
+      "Entire card is clickable",
+      "Hover state clearly shows interactivity",
+      "Cards feel safe to click (no surprise actions)"
+    ]
+  },
+  {
+    "id": "global_prompt_detail_view",
+    "category": "global_rules",
+    "label": "Prompt Detail View",
+    "prompt_text": "Clicking a card opens a detail view explaining what the prompt creates, typical use cases, and available options. It includes a Prompt Overview Panel, Variation Selector, Frame Grid (01-06), and a Primary Action Button to Deploy Full Contact Sheet.",
+    "constraints": [
+      "Variations change the vibe, not the structure",
+      "Variations never break the grid or layout",
+      "Switching variations should feel predictable, safe, and reversible",
+      "Frame tiles include frame number, short description, and copy button"
+    ]
+  },
+  {
+    "id": "global_copy_feedback",
+    "category": "global_rules",
+    "label": "Copy & Feedback Behavior",
+    "prompt_text": "Copying is the core action of the app. Users must be able to copy the full prompt or individual frames. The UI must provide immediate visual confirmation.",
+    "constraints": [
+      "Happen instantly",
+      "Show clear confirmation (checkmark, glow, or text change)",
+      "Never open pop-ups"
+    ]
+  },
+  {
+    "id": "global_visual_usability_standards",
+    "category": "global_rules",
+    "label": "Visual & Usability Standards",
+    "prompt_text": "The aesthetic uses a dark background with metallic chrome surfaces and neon-lime highlights. Typography uses Orbitron for headings and Switzer for body text. The app follows Nielsen Norman Group principles for obvious actions and consistent feedback.",
+    "constraints": [
+      "Animations must feel smooth, calm, and premium",
+      "No flashy or distracting effects",
+      "Use a golden-ratio type scale",
+      "Prioritize readability over decoration",
+      "Make actions obvious and keep interactions consistent"
+    ]
+  }
+];
+    const MODULES = [
+  {
+    "id": "facial_pose_primary_moods",
+    "category": "facial_pose",
+    "label": "Primary Moods",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the face. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Pure joy, wide genuine smile with eyes crinkled 2. Deep sadness, eyes downcast and heavy lids 3. Intense anger, furrowed brow and clenched jaw 4. Shock and wonder, raised brows and open mouth 5. Subtle contempt, asymmetrical lip curl 6. Fearful dread, wide eyes and tense expression",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same face, proportions, skin texture, and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "FACIAL",
+    "desc": "6-frame facial expression lock"
+  },
+  {
+    "id": "facial_pose_bizarre_expressions",
+    "category": "facial_pose",
+    "label": "Bizarre Expressions",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Extreme facial close-ups. Background: white studio. FRAMES: 1. Asymmetrical jaw shift with mouth distortion 2. Scrunched nose with compressed facial features 3. One eye open wide, one eye tightly closed 4. Inflated cheeks with eyes rolled upward 5. Frozen unnatural smile showing teeth 6. Lower lip pulled upward covering the upper lip",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same face identity and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "FACIAL",
+    "desc": "Extreme facial expressions, no drift"
+  },
+  {
+    "id": "facial_pose_ocular_macro",
+    "category": "facial_pose",
+    "label": "Ocular Macro",
+    "prompt_text": "Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Extreme macro photography. Background: clean white. FRAMES: 1. Iris close-up showing color and pattern 2. Cheek skin macro showing pores and texture 3. Mouth and chin macro showing lip structure 4. Asymmetrical sneer expression close-up 5. Awe expression with dilated pupils 6. Concentrated brow furrow close-up",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Consistent lighting and color tone",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "FACIAL",
+    "desc": "Eye-focused detail shots"
+  },
+  {
+    "id": "facial_pose_full_head_dynamics",
+    "category": "facial_pose",
+    "label": "Full Head Dynamics",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: white void. FRAMES: 1. Neutral frontal expression 2. Slight head turn highlighting skin texture 3. Mouth-focused expression study 4. Asymmetrical sneer with tension 5. Expression of awe and wonder 6. Concentrated scowl with brow tension",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same head shape, proportions, and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "FACIAL",
+    "desc": "Full head expression study"
+  },
+  {
+    "id": "facial_pose_kinetic_impact",
+    "category": "facial_pose",
+    "label": "Kinetic Impact",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Cinematic slow-motion look. FRAMES: 1. Side impact with jaw pushed sideways 2. Upward recoil from a rising strike 3. Front-facing compression from direct hit 4. Soft tissue vibration around cheeks 5. Rotational snap from angled impact 6. Full head recoil showing total displacement",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same face identity and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "FACIAL",
+    "desc": "Impact dynamics, frozen motion"
+  },
+  {
+    "id": "anatomy_pose_fashion_stances",
+    "category": "anatomy_pose",
+    "label": "Fashion Stances",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the character. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front view, full body, neutral fashion stance 2. Back view, full body, upright posture 3. Side profile, full body, relaxed stance 4. Front view, full body, arms extended outward 5. Low-angle full body view, camera near ground 6. Top-down full body view, camera directly overhead",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers between frames",
+      "Same character, outfit, proportions, facial features, and lighting in every frame",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "ANATOMY",
+    "desc": "Full-body pose consistency"
+  },
+  {
+    "id": "anatomy_pose_floating_poses",
+    "category": "anatomy_pose",
+    "label": "Floating Poses",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: pure white void. FRAMES: 1. Vertical floating pose, limbs relaxed 2. Upside-down floating pose 3. Horizontal floating pose, body rotated sideways 4. Corkscrew rotation pose in mid-air 5. Worm-eye view looking up at floating character 6. Top-down view of character floating cross-legged",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "ANATOMY",
+    "desc": "Suspended body positions"
+  },
+  {
+    "id": "anatomy_pose_floor_poses",
+    "category": "anatomy_pose",
+    "label": "Floor Poses",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Surface: white polished floor. FRAMES: 1. Cross-legged seated pose, upright posture 2. Kneeling upright pose, viewed from above 3. Side recline supported by one arm 4. Deep crouch facing forward 5. Close-up of hands pressing into the floor 6. Top-down view of body lying flat in star shape",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character, lighting, and environment across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "ANATOMY",
+    "desc": "Ground-level body control"
+  },
+  {
+    "id": "anatomy_pose_kung_fu_moves",
+    "category": "anatomy_pose",
+    "label": "Kung Fu Moves",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: minimal white void. FRAMES: 1. Horse stance, front view, deep crouch 2. Low snake stance, side profile close to ground 3. One-leg balance stance, upright posture 4. Forward lunge strike toward camera 5. Rear-view low pounce stance 6. Top-down view showing hand formations",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "ANATOMY",
+    "desc": "Action pose lock"
+  },
+  {
+    "id": "anatomy_pose_editorial_imbalance",
+    "category": "anatomy_pose",
+    "label": "Editorial Imbalance",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: minimal white studio. FRAMES: 1. Uneven shoulder alignment, front view 2. Strong hip lean, three-quarter view 3. Mismatched arm positions, full body 4. Sharp head tilt with body lean 5. Pigeon-toed stance emphasizing imbalance 6. Rear view with twisted torso",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "ANATOMY",
+    "desc": "Asymmetrical editorial poses"
+  },
+  {
+    "id": "anatomy_pose_locked_camera_editorial_grid",
+    "category": "anatomy_pose",
+    "label": "Locked-Camera Editorial Grid",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Lighting and styling must remain identical. FRAMES: 1. Eye-level full-body shot 2. Low-angle medium shot 3. High-angle full-body shot 4. Side-profile medium shot 5. Extreme low-angle full-body shot 6. Top-down medium shot",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "ANATOMY",
+    "desc": "Multi-angle editorial system"
+  },
+  {
+    "id": "anatomy_pose_hand_gestures",
+    "category": "anatomy_pose",
+    "label": "Hand Gestures",
+    "prompt_text": "Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES) focused on HANDS ONLY. Resolution: 8K. Background: clean white void. FRAMES: 1. Relaxed open hand pose 2. Hands framing the face area 3. Hands reaching upward toward camera 4. Hands near head with interlocked tension 5. Over-the-shoulder reach into space 6. Top-down view with hands arranged symmetrically",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Consistent lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "ANATOMY",
+    "desc": "Hand position precision"
+  },
+  {
+    "id": "apparel_textile_upper_body_spec",
+    "category": "apparel_textile",
+    "label": "Upper-Body Spec",
+    "prompt_text": "Use the uploaded GARMENT REFERENCE IMAGE as the exact source. Do not redesign the garment. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio void. FRAMES: 1. Waist-up front view showing chest drape and fabric fall 2. Waist-up rear view showing yoke and shoulder tension 3. Three-quarter view highlighting collar and lapel structure 4. Shoulder profile focusing on sleeve head and seam precision 5. High-angle medium view plunging toward the collar 6. Extreme close-up macro of fabric weave and stitching",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve 100% garment color, material, stitching, and construction from the reference image",
+      "Same lighting and camera style across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "APPAREL",
+    "desc": "Garment structure, no distortion"
+  },
+  {
+    "id": "apparel_textile_apparel_catalog",
+    "category": "apparel_textile",
+    "label": "Apparel Catalog",
+    "prompt_text": "Use the uploaded SHIRT REFERENCE IMAGE as the exact source. Strictly no human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: pure white studio. FRAMES: 1. Front flat view, graphic centered and readable 2. Back flat view showing rear print or blank surface 3. Side profile showing sleeve and collar depth 4. Three-quarter view showing garment volume 5. Neatly folded retail presentation 6. Compact square fold for packaging view",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve 100% graphic placement, color, and fabric behavior from the reference",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "APPAREL",
+    "desc": "Flat apparel documentation"
+  },
+  {
+    "id": "apparel_textile_bottoms_catalog",
+    "category": "apparel_textile",
+    "label": "Bottoms Catalog",
+    "prompt_text": "Use the uploaded PANTS REFERENCE IMAGE as the exact source. No human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: white studio. FRAMES: 1. Front flat view showing waistband and leg alignment 2. Back flat view showing pockets and seam layout 3. Side profile highlighting leg volume 4. Three-quarter view showing drape and folds 5. Neatly folded lengthwise retail view 6. Compact waistband stack view",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve waistband shape, stitching, color, and textile behavior",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "APPAREL",
+    "desc": "Pants catalog system"
+  },
+  {
+    "id": "apparel_textile_outerwear_catalog",
+    "category": "apparel_textile",
+    "label": "Outerwear Catalog",
+    "prompt_text": "Use the uploaded JACKET REFERENCE IMAGE as the exact source. No human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front shell view showing jacket structure 2. Rear shell view showing yoke and back panels 3. Side profile highlighting thickness and padding 4. Three-quarter view showing collar and form 5. Open-front view revealing internal lining 6. Neatly folded retail presentation",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve hardware, lining, padding, and textile fidelity",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "APPAREL",
+    "desc": "Jacket documentation"
+  },
+  {
+    "id": "apparel_textile_hosiery_catalog",
+    "category": "apparel_textile",
+    "label": "Hosiery Catalog",
+    "prompt_text": "Use the uploaded SOCKS REFERENCE IMAGE as the exact source. No human feet or legs. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: pure white studio void. FRAMES: 1. Lateral profile showing full sock silhouette 2. Angled front view focusing on toe box and instep 3. Rear heel view highlighting Y-stitch construction 4. Top-down view looking into the cuff opening 5. Neatly folded retail pair 6. Extreme macro of knit pattern and fibers",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve knit density, ribbing, color, and logo placement",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "APPAREL",
+    "desc": "Sock technical specs"
+  },
+  {
+    "id": "apparel_textile_shoe_tech_spec",
+    "category": "apparel_textile",
+    "label": "Shoe Tech Spec",
+    "prompt_text": "Use the uploaded FOOTWEAR REFERENCE IMAGE as the exact source. No human body parts. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: white studio. FRAMES: 1. Lateral profile showing overall silhouette 2. Front view highlighting toe box and lacing 3. Rear heel view showing heel counter 4. Top-down entry view of upper pattern 5. Outsole macro showing tread pattern 6. Three-quarter view showing depth and layering",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve shape, materials, and construction details",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "APPAREL",
+    "desc": "Footwear specification"
+  },
+  {
+    "id": "cinematography_essential_angles",
+    "category": "cinematography",
+    "label": "Essential Angles",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the character. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front-facing full body view, neutral stance for silhouette clarity 2. Rear full body view, upright posture showing back structure 3. Side profile full body view, sculptural outline 4. Extreme facial close-up focusing on eyes and skin detail 5. Chest-up medium shot showing torso and head proportions 6. High-angle downward view revealing footprint and spacing",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character, outfit, proportions, and lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Core camera angles"
+  },
+  {
+    "id": "cinematography_kinetic_flash",
+    "category": "cinematography",
+    "label": "Kinetic Flash",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: nighttime industrial Brooklyn streets. Lighting is dominated by direct on-camera flash with deep shadows. FRAMES: 1. Mid-air rooftop leap frozen by flash 2. Facial close-up through rising steam 3. Wide shot moving parallel to a brick wall 4. Close-up of hands gripping rusted metal 5. Rooftop vault captured mid-motion 6. High-angle plunge view into a vertical shaft",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting logic across all frames",
+      "Motion frozen cleanly with no blur on the subject",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Motion flash freeze"
+  },
+  {
+    "id": "cinematography_street_flash",
+    "category": "cinematography",
+    "label": "Street Flash",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: empty nighttime city streets. FRAMES: 1. Crossing a wet street with reflective asphalt 2. Facial close-up through steam vent 3. Fire escape lunge frozen mid-air 4. Seated in stairwell flattened by flash 5. Side profile against chain-link fence 6. Pressed against fogged glass with flash glare",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character and lighting logic across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Street flash, frozen motion"
+  },
+  {
+    "id": "cinematography_editorial_set_projection",
+    "category": "cinematography",
+    "label": "Editorial Set Projection",
+    "prompt_text": "Use the uploaded ENVIRONMENT REFERENCE IMAGE as the exact spatial anchor. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Maintain identical lighting direction, materials, and atmosphere across all frames. FRAMES: 1. Wide establishing view anchoring the space 2. True top-down zenith view of the environment 3. High-angle three-quarter view showing depth 4. Side-on profile view emphasizing spatial rhythm 5. Ground-level upward view highlighting scale 6. Extreme close-up of a primary surface detail",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Preserve architectural structure and material behavior",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Editorial lighting control"
+  },
+  {
+    "id": "cinematography_white_void_standoff",
+    "category": "cinematography",
+    "label": "White Void Standoff",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGES for both characters. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: sterile white void. FRAMES: 1. Wide symmetrical standoff with both characters facing each other 2. Over-the-shoulder view focusing on character B's eyes 3. Over-the-shoulder view focusing on character A's eyes 4. Extreme close-up profile with faces inches apart 5. Low-angle shot emphasizing dominance and power 6. Juxtaposed macro view of both characters' eyes",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Consistent lighting and camera style across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Two-character confrontation"
+  },
+  {
+    "id": "cinematography_impact_ko",
+    "category": "cinematography",
+    "label": "Impact & KO",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGES for both fighters. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: clean white technical void. FRAMES: 1. Wide collision moment just before impact 2. Medium shot of character A landing a strike 3. Medium shot of character B countering 4. Low-angle finishing uppercut 5. Wide knockdown with one fighter falling 6. Exhausted aftermath standoff",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same lighting and camera logic across all frames",
+      "Motion frozen sharply with no blur on faces",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Combat sequence capture"
+  },
+  {
+    "id": "cinematography_industrial_after_hours",
+    "category": "cinematography",
+    "label": "Industrial After Hours",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: abandoned industrial Brooklyn at night. FRAMES: 1. Leaning against a rusted fire escape 2. Inside abandoned boiler room with harsh flash 3. Facing exposed electrical panels 4. Top-down view from steel catwalk 5. Side profile near loading dock 6. Extreme macro of hands gripping steel railing",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same lighting logic and environment across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Industrial night photography"
+  },
+  {
+    "id": "cinematography_supernova_recoil",
+    "category": "cinematography",
+    "label": "Supernova Recoil",
+    "prompt_text": "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: pure black void. FRAMES: 1. Frontal impact knocking the figure backward 2. Low-angle view of ascending recoil 3. Side profile of suspended recoil 4. High-angle plunge into darkness 5. Macro head-and-shoulders light haze 6. Rear view fading into infinity",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Subject rendered as a featureless white silhouette",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "CINEMATOGRAPHY",
+    "desc": "Silhouette impact study"
+  },
+  {
+    "id": "product_commercial_hero",
+    "category": "product",
+    "label": "Commercial Hero",
+    "prompt_text": "Use the uploaded PRODUCT REFERENCE IMAGE to preserve exact design, color, and proportions. Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Front-facing hero interaction, product held at chest height 2. Extreme close-up of hands interacting with the product 3. Three-quarter lifestyle view, character walking naturally with product 4. Top-down overhead view of character and product on white surface 5. Low-angle hero view looking up at character holding product 6. Side profile focusing on hand-to-product contact points",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same product, same character, same lighting across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "PRODUCT",
+    "desc": "Product interaction, no drift"
+  },
+  {
+    "id": "product_surface_topography",
+    "category": "product",
+    "label": "Surface Topography",
+    "prompt_text": "Use the uploaded TEXTILE OR GARMENT REFERENCE IMAGE to preserve exact weave and material qualities. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. White studio void. FRAMES: 1. Straight-on macro view showing full weave pattern 2. Angled macro view revealing material depth 3. Grazing-angle macro highlighting surface fibers 4. High-angle macro plunging into material folds 5. Centered macro showing repeating structural pattern 6. Tilted-focus macro with soft depth falloff",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Consistent lighting and color tone across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "PRODUCT",
+    "desc": "Material macro detail"
+  },
+  {
+    "id": "product_acrobatic_flux",
+    "category": "product",
+    "label": "Acrobatic Flux",
+    "prompt_text": "Use the uploaded PRODUCT REFERENCE IMAGE. Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Clean white studio. FRAMES: 1. Traditional three-object juggle pattern, frozen mid-motion 2. Low-angle view tracking one product at peak height 3. Under-leg toss during active movement 4. Close-up balancing the product on face or head 5. Rear view catching product behind the back 6. Top-down view catching multiple products at once",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same character, same product, same lighting across all frames",
+      "Motion is frozen cleanly with no blur on the product",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "PRODUCT",
+    "desc": "Dynamic product motion"
+  },
+  {
+    "id": "product_studio_liquid",
+    "category": "product",
+    "label": "Studio Liquid",
+    "prompt_text": "Use the uploaded BEVERAGE PRODUCT REFERENCE IMAGE to preserve exact label design, color, and container shape. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Environment: pure white technical void. FRAMES: 1. Centered floating product hero with soft shadow beneath 2. Extreme macro of condensation droplets on the surface 3. Product intersecting a suspended circular liquid splash 4. Absolute top-down view with product centered in liquid ripple 5. Ultra-close label detail where typography feels sculptural 6. Sideways liquid pour defying gravity into the container",
+    "constraints": [
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers",
+      "Same container, same branding, same lighting logic across all frames",
+      "No visible text, labels, numbers, captions, or overlays"
+    ],
+    "tag": "PRODUCT",
+    "desc": "Liquid product capture"
+  }
+];
+
+    // Accurate Phase B1 compilation logic
+    function compilePrompt(moduleId) {
+      const module = MODULES.find(m => m.id === moduleId);
+      if (!module) return '';
+
+      const sections = [];
+
+      // IDENTITY & REFERENCES section (always present)
+      sections.push('IDENTITY & REFERENCES');
+      if (module.prompt_text.includes('CHARACTER REFERENCE IMAGE')) {
+        sections.push('Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.');
+      }
+      if (module.prompt_text.includes('PRODUCT REFERENCE IMAGE')) {
+        sections.push('Use the uploaded PRODUCT REFERENCE IMAGE as the exact source.');
+      }
+      if (module.prompt_text.includes('ENVIRONMENT REFERENCE IMAGE')) {
+        sections.push('Use the uploaded ENVIRONMENT REFERENCE IMAGE as the spatial anchor.');
+      }
+      if (sections.length === 1) {
+        sections.push('No reference images specified.');
+      }
+      sections.push('');
+
+      // GLOBAL RULES section
+      sections.push('GLOBAL RULES');
+      GLOBAL_RULES.forEach(rule => {
+        sections.push(rule.prompt_text);
+        sections.push('');
+      });
+
+      // Category-specific section
+      const categoryMap = {
+        'facial_pose': 'FACIAL POSES',
+        'anatomy_pose': 'ANATOMY / BODY',
+        'apparel_textile': 'APPAREL & TEXTILE',
+        'cinematography': 'CINEMATOGRAPHY',
+        'product': 'MACRO & PRODUCT'
+      };
+      sections.push(categoryMap[module.category] || module.category.toUpperCase());
+      sections.push(module.prompt_text);
+      sections.push('');
+
+      // CONSTRAINTS section
+      if (module.constraints && module.constraints.length > 0) {
+        sections.push('CONSTRAINTS');
+        module.constraints.forEach(c => sections.push('• ' + c));
+        
+        // Add global constraints
+        const allConstraints = [...module.constraints];
+        GLOBAL_RULES.forEach(rule => {
+          rule.constraints.forEach(c => {
+            if (!allConstraints.includes(c)) {
+              allConstraints.push(c);
+            }
+          });
+        });
+        
+        // Deduplicate and sort
+        const uniqueConstraints = [...new Set(allConstraints)].sort();
+        sections.push('');
+        sections.push('CONSTRAINTS (DEDUPLICATED)');
+        uniqueConstraints.forEach(c => sections.push('• ' + c));
+      }
+
+      return sections.join('\n');
+    }
+
+    // Render grid
+    function renderGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = MODULES.map(module => `
+        <div class="card" onclick="openModal('${module.id}')">
+          <div class="card-tag">${module.tag}</div>
+          <div class="card-title">${module.label}</div>
+          <div class="card-desc">${module.desc}</div>
+        </div>
+      `).join('');
+      
+      document.getElementById('stats').textContent = `${MODULES.length} modules • All Phase A data • Accurate Phase B1 compilation`;
+    }
+
+    // Modal controls
+    let currentPrompt = '';
+
+    function openModal(moduleId) {
+      currentPrompt = compilePrompt(moduleId);
+      document.getElementById('prompt').textContent = currentPrompt;
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('copyBtn').classList.remove('copied');
+      document.getElementById('copyBtn').textContent = 'Copy Full Prompt';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    async function copyPrompt() {
+      try {
+        await navigator.clipboard.writeText(currentPrompt);
+        const btn = document.getElementById('copyBtn');
+        btn.classList.add('copied');
+        btn.textContent = '✓ Copied';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.textContent = 'Copy Full Prompt';
+        }, 2000);
+      } catch (err) {
+        console.error('Copy failed:', err);
+        alert('Copied to clipboard!');
+      }
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modal').addEventListener('click', closeModal);
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Initialize
+    renderGrid();
+  </script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Same character. Every shoot. Guaranteed.</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #09090b;
+      color: #fafafa;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.75rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #71717a;
+      margin-bottom: 2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .card:hover {
+      background: #27272a;
+      border-color: #ccff00;
+      transform: translateY(-2px);
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #a1a1aa;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: #a1a1aa;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      z-index: 50;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background: #18181b;
+      border: 1px solid #27272a;
+      border-radius: 1rem;
+      max-width: 56rem;
+      width: 100%;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem;
+      border-bottom: 1px solid #27272a;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #a1a1aa;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem 0.5rem;
+      line-height: 1;
+    }
+
+    .close-btn:hover {
+      color: #fafafa;
+    }
+
+    .modal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .prompt-box {
+      background: #09090b;
+      border: 1px solid #27272a;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.875rem;
+      color: #d4d4d8;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .modal-footer {
+      padding: 1.5rem;
+      border-top: 1px solid #27272a;
+    }
+
+    .copy-btn {
+      width: 100%;
+      background: #ccff00;
+      color: #09090b;
+      border: none;
+      border-radius: 0.5rem;
+      padding: 1rem 2rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: #b8e600;
+    }
+
+    .copy-btn.copied {
+      background: #22c55e;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Same character. Every shoot. Guaranteed.</h1>
+      <p class="subtitle">Ready-to-use visual systems</p>
+    </header>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Compiled Prompt</h2>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="prompt-box" id="prompt"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">Copy Full Prompt</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Phase A Data (Real prompt modules)
+    const MODULES = [
+      {
+        id: "facial_pose_primary_moods",
+        category: "facial_pose",
+        label: "Primary Moods",
+        tag: "FACIAL",
+        desc: "6-frame facial expression lock",
+        prompt_text: "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Do not redesign the face. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Background: clean white studio. FRAMES: 1. Pure joy, wide genuine smile with eyes crinkled 2. Deep sadness, eyes downcast and heavy lids 3. Intense anger, furrowed brow and clenched jaw 4. Shock and wonder, raised brows and open mouth 5. Subtle contempt, asymmetrical lip curl 6. Fearful dread, wide eyes and tense expression",
+        constraints: [
+          "Exact 3x2 grid, exactly 6 frames",
+          "All frames identical in size and perfectly aligned",
+          "Thin 2px grid dividers",
+          "Same face, proportions, skin texture, and lighting across all frames",
+          "No visible text, labels, numbers, captions, or overlays"
+        ]
+      },
+      {
+        id: "facial_pose_bizarre_expressions",
+        category: "facial_pose",
+        label: "Bizarre Expressions",
+        tag: "FACIAL",
+        desc: "Extreme facial expressions, no drift",
+        prompt_text: "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Extreme facial close-ups. Background: white studio. FRAMES: 1. Asymmetrical jaw shift with mouth distortion 2. Scrunched nose with compressed facial features 3. One eye open wide, one eye tightly closed 4. Inflated cheeks with eyes rolled upward 5. Frozen unnatural smile showing teeth 6. Lower lip pulled upward covering the upper lip",
+        constraints: [
+          "Exact 3x2 grid, exactly 6 frames",
+          "All frames identical in size and perfectly aligned",
+          "Thin 2px grid dividers",
+          "Same face identity and lighting across all frames",
+          "No visible text, labels, numbers, captions, or overlays"
+        ]
+      },
+      {
+        id: "anatomy_pose_fashion_stances",
+        category: "anatomy_pose",
+        label: "Fashion Stances",
+        tag: "ANATOMY",
+        desc: "Full-body pose consistency",
+        prompt_text: "Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Full-body fashion poses. Background: white seamless. FRAMES: 1. Arms at sides, weight on left leg 2. Hand on hip, slight body turn 3. Walking stance, natural motion 4. Crossed arms, confident posture 5. Leaning stance, relaxed position 6. Profile stance, side view",
+        constraints: [
+          "Exact 3x2 grid, exactly 6 frames",
+          "All frames identical in size and perfectly aligned",
+          "Same body proportions and lighting",
+          "No visible text, labels, or overlays"
+        ]
+      },
+      {
+        id: "apparel_textile_luxury_editorial",
+        category: "apparel_textile",
+        label: "Luxury Editorial",
+        tag: "APPAREL",
+        desc: "Garment structure, no distortion",
+        prompt_text: "Use the uploaded CHARACTER REFERENCE IMAGE. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Luxury fashion editorial. FRAMES: 1. Structured blazer, clean lines 2. Flowing silk dress, fabric drape 3. Tailored pants, precise fit 4. Cashmere sweater, soft texture 5. Leather jacket, material detail 6. Evening gown, dramatic silhouette",
+        constraints: [
+          "Exact 3x2 grid, exactly 6 frames",
+          "Garment details preserved",
+          "Consistent lighting and color",
+          "No distortion or drift"
+        ]
+      },
+      {
+        id: "cinematography_street_flash",
+        category: "cinematography",
+        label: "Street Flash",
+        tag: "CINEMATOGRAPHY",
+        desc: "Street flash, frozen motion",
+        prompt_text: "Use the uploaded CHARACTER REFERENCE IMAGE. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Street photography with flash. FRAMES: 1. Direct flash, frozen motion 2. Side lighting, dramatic shadows 3. Backlit silhouette with rim light 4. Hard flash, high contrast 5. Motion blur with flash freeze 6. Night street, flash fill",
+        constraints: [
+          "Exact 3x2 grid, exactly 6 frames",
+          "Street photography aesthetic",
+          "Flash photography lighting",
+          "No drift in subject identity"
+        ]
+      },
+      {
+        id: "product_macro",
+        category: "product",
+        label: "Product Macro",
+        tag: "PRODUCT",
+        desc: "Product interaction, no drift",
+        prompt_text: "Use the uploaded PRODUCT REFERENCE IMAGE. Create a PROFESSIONAL 3x2 GRID CONTACT SHEET (6 IMAGES). Resolution: 8K. Macro product shots. FRAMES: 1. Product detail close-up 2. Texture macro shot 3. Material surface detail 4. Brand element close-up 5. Functional detail shot 6. Packaging detail",
+        constraints: [
+          "Exact 3x2 grid, exactly 6 frames",
+          "Product consistency maintained",
+          "High detail macro shots",
+          "No product drift"
+        ]
+      }
+    ];
+
+    const GLOBAL_RULES = [
+      "The app homepage is a stack of category sections, each containing a grid of cards.",
+      "All prompts are displayed as grid cards. Each card is one ready-to-use visual system.",
+      "Cards are displayed in a clean, evenly spaced grid with consistent sizing.",
+      "All frames identical in size and perfectly aligned with thin 2px grid dividers.",
+      "Same character identity across all frames. No drift. Ever."
+    ];
+
+    // Render grid
+    function renderGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = MODULES.map(module => `
+        <div class="card" onclick="openModal('${module.id}')">
+          <div class="card-tag">${module.tag}</div>
+          <div class="card-title">${module.label}</div>
+          <div class="card-desc">${module.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    // Compile prompt (simplified Phase B1 logic)
+    function compilePrompt(moduleId) {
+      const module = MODULES.find(m => m.id === moduleId);
+      if (!module) return '';
+
+      const sections = [];
+
+      // Identity section
+      sections.push('IDENTITY & REFERENCES');
+      sections.push('Use the uploaded CHARACTER REFERENCE IMAGE as the exact identity.');
+      sections.push('');
+
+      // Global rules
+      sections.push('GLOBAL RULES');
+      sections.push(GLOBAL_RULES.join('\n'));
+      sections.push('');
+
+      // Module prompt
+      sections.push(module.tag.toUpperCase());
+      sections.push(module.prompt_text);
+      sections.push('');
+
+      // Constraints
+      if (module.constraints && module.constraints.length > 0) {
+        sections.push('CONSTRAINTS');
+        module.constraints.forEach(c => sections.push('• ' + c));
+      }
+
+      return sections.join('\n');
+    }
+
+    // Modal controls
+    let currentPrompt = '';
+
+    function openModal(moduleId) {
+      currentPrompt = compilePrompt(moduleId);
+      document.getElementById('prompt').textContent = currentPrompt;
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('copyBtn').classList.remove('copied');
+      document.getElementById('copyBtn').textContent = 'Copy Full Prompt';
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    async function copyPrompt() {
+      try {
+        await navigator.clipboard.writeText(currentPrompt);
+        const btn = document.getElementById('copyBtn');
+        btn.classList.add('copied');
+        btn.textContent = '✓ Copied';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          btn.textContent = 'Copy Full Prompt';
+        }, 2000);
+      } catch (err) {
+        console.error('Copy failed:', err);
+      }
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modal').addEventListener('click', closeModal);
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Initialize
+    renderGrid();
+  </script>
+</body>
+</html>
