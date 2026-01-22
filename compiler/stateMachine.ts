@@ -138,7 +138,7 @@ function violatesScopeOnSelect(nextModule: PromptModule, state: AppState, librar
   if (anyScope(existingMetas, "hands_only")) return "Cannot add modules when a hands-only module is selected in v1.";
 
   if (nextMeta.scope === "environment_only") return "Environment-only module must be used alone in v1.";
-  if (anyScope(existingMetas, "environment_only")) return "Cannot add modules when an environment-only module is selected in v1.";
+  if (anyScope(existingMetas, "environment_only")) return "Cannot add modules when an Environment-only module is selected in v1.";
 
   return null;
 }
