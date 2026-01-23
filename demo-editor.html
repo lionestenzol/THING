@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Same character. Every shoot. Guaranteed.</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #09090b; color: #fafafa; min-height: 100vh; line-height: 1.5;
+    }
+    .container { max-width: 1280px; margin: 0 auto; padding: 3rem 1.5rem; }
+    header { text-align: center; margin-bottom: 3rem; }
+    h1 { font-size: clamp(2rem, 5vw, 3.75rem); font-weight: 700; line-height: 1.1; margin-bottom: 0.5rem; }
+    .subtitle { font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; color: #71717a; margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: #18181b; border: 1px solid #27272a; border-radius: 0.75rem; padding: 1.25rem; cursor: pointer; transition: all 0.2s; }
+    .card:hover { background: #27272a; border-color: #ccff00; transform: translateY(-2px); }
+    .card.selected { background: rgba(204, 255, 0, 0.1); border-color: #ccff00; }
+    .card-tag { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; color: #a1a1aa; margin-bottom: 0.5rem; }
+    .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.375rem; line-height: 1.3; }
+    .card-desc { font-size: 0.8125rem; color: #a1a1aa; line-height: 1.4; }
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center; padding: 1.5rem; z-index: 50; overflow-y: auto; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: #18181b; border: 1px solid #27272a; border-radius: 1rem; max-width: 40rem; width: 100%;
+      display: flex; flex-direction: column; margin: auto; overflow: hidden; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border-bottom: 1px solid #27272a; }
+    .modal-title { font-size: 1.25rem; font-weight: 600; }
+    .close-btn { background: transparent; border: none; color: #a1a1aa; font-size: 1.5rem; cursor: pointer; padding: 0.25rem 0.5rem; line-height: 1; }
+    .close-btn:hover { color: #fafafa; }
+    .modal-body { padding: 1.5rem; }
+    .image-container { aspect-ratio: 1; background: #09090b; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .image-container img { width: 100%; height: 100%; object-fit: cover; }
+    .loading { text-align: center; }
+    .spinner { width: 3rem; height: 3rem; border: 4px solid #ccff00; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { color: #a1a1aa; font-size: 0.875rem; }
+    .error-text { color: #f87171; font-size: 0.875rem; }
+    .modal-footer { padding: 1.5rem; border-top: 1px solid #27272a; }
+    .download-btn { width: 100%; background: #ccff00; color: #09090b; border: none; border-radius: 0.5rem;
+      padding: 1rem 2rem; font-size: 1.125rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .download-btn:hover { background: #b8e600; }
+    .download-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .stats { text-align: center; color: #71717a; font-size: 0.875rem; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Same character. Every shoot. Guaranteed.</h1>
+      <p class="subtitle">Ready-to-use visual systems</p>
+    </header>
+    <div class="grid" id="grid"></div>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div class="modal-overlay" id="modal">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modalTitle">Creating...</h2>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="image-container" id="imageContainer">
+          <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p class="loading-text" id="loadingText">Generating...</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" id="modalFooter" style="display: none;">
+        <button class="download-btn" id="downloadBtn" onclick="downloadImage()">Download Image</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MODULES = [
+      { id: "facial_pose_primary_moods", tag: "FACIAL", label: "Primary Moods", desc: "6-frame facial expression lock" },
+      { id: "facial_pose_bizarre_expressions", tag: "FACIAL", label: "Bizarre Expressions", desc: "Extreme facial expressions, no drift" },
+      { id: "facial_pose_ocular_macro", tag: "FACIAL", label: "Ocular Macro", desc: "Eye-focused detail shots" },
+      { id: "anatomy_pose_fashion_stances", tag: "ANATOMY", label: "Fashion Stances", desc: "Full-body pose consistency" },
+      { id: "anatomy_pose_floating_poses", tag: "ANATOMY", label: "Floating Poses", desc: "Suspended body positions" },
+      { id: "anatomy_pose_floor_poses", tag: "ANATOMY", label: "Floor Poses", desc: "Ground-level body control" },
+      { id: "anatomy_pose_kung_fu_moves", tag: "ANATOMY", label: "Kung Fu Moves", desc: "Action pose lock" },
+      { id: "anatomy_pose_hand_gestures", tag: "ANATOMY", label: "Hand Gestures", desc: "Hand position precision" },
+      { id: "apparel_textile_luxury_editorial", tag: "APPAREL", label: "Luxury Editorial", desc: "Garment structure, no distortion" },
+      { id: "apparel_textile_street_utility", tag: "APPAREL", label: "Street Utility", desc: "Streetwear consistency" },
+      { id: "product_macro", tag: "PRODUCT", label: "Product Macro", desc: "Product interaction, no drift" },
+      { id: "cinematography_essential_angles", tag: "CINEMATOGRAPHY", label: "Essential Angles", desc: "Core camera angles" },
+      { id: "cinematography_kinetic_flash", tag: "CINEMATOGRAPHY", label: "Kinetic Flash", desc: "Motion flash freeze" },
+      { id: "cinematography_street_flash", tag: "CINEMATOGRAPHY", label: "Street Flash", desc: "Street flash, frozen motion" },
+      { id: "cinematography_editorial_set_projection", tag: "CINEMATOGRAPHY", label: "Editorial Set Projection", desc: "Editorial lighting control" }
+    ];
+
+    // Orchestration state
+    let orchState = { status: 'idle', finalImage: null, error: null };
+    let selectedModuleId = null;
+
+    // Phase C Orchestration: runShoot
+    async function runShoot(moduleId) {
+      // Step 1: Generate variations (hidden from user)
+      const variations = await mockGenerate(moduleId);
+
+      // Step 2: Auto-select best candidate (index 0)
+      const bestCandidate = variations[0];
+
+      // Step 3: Refine best
+      const finalImage = await refine(bestCandidate);
+
+      return finalImage;
+    }
+
+    // Mock generate function - simulates 3x2 sheet generation (hidden)
+    async function mockGenerate(moduleId) {
+      await new Promise(r => setTimeout(r, 1200));
+      // Returns 6 variations internally - user never sees these
+      return [
+        `https://placehold.co/1024x1024/1a1a1a/ccff00?text=${encodeURIComponent(moduleId.split('_').pop())}`,
+        'https://placehold.co/1024x1024/1a1a1a/ccff00?text=V2',
+        'https://placehold.co/1024x1024/1a1a1a/ccff00?text=V3',
+        'https://placehold.co/1024x1024/1a1a1a/ccff00?text=V4',
+        'https://placehold.co/1024x1024/1a1a1a/ccff00?text=V5',
+        'https://placehold.co/1024x1024/1a1a1a/ccff00?text=V6'
+      ];
+    }
+
+    // Refine function - applies cleanup pass
+    async function refine(candidate) {
+      await new Promise(r => setTimeout(r, 800));
+      // Returns refined single image
+      return candidate.replace('1a1a1a', '0a0a0a').replace('ccff00', 'ccff00') + '&refined=true';
+    }
+
+    // Render grid
+    function renderGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = MODULES.map(module => `
+        <div class="card ${selectedModuleId === module.id ? 'selected' : ''}" onclick="handleCardClick('${module.id}')">
+          <div class="card-tag">${module.tag}</div>
+          <div class="card-title">${module.label}</div>
+          <div class="card-desc">${module.desc}</div>
+        </div>
+      `).join('');
+
+      document.getElementById('stats').textContent = `${MODULES.length} modules • Phase C Editor Mode • Single Image Output`;
+    }
+
+    // Handle card click - triggers orchestration
+    async function handleCardClick(moduleId) {
+      selectedModuleId = moduleId;
+      renderGrid();
+
+      // Reset and show modal
+      orchState = { status: 'generating', finalImage: null, error: null };
+      updateModal();
+      document.getElementById('modal').classList.add('active');
+
+      try {
+        // Update to refining state after a moment
+        setTimeout(() => {
+          if (orchState.status === 'generating') {
+            orchState.status = 'refining';
+            updateModal();
+          }
+        }, 1200);
+
+        // Run full orchestration
+        const finalImage = await runShoot(moduleId);
+
+        orchState = { status: 'complete', finalImage, error: null };
+        updateModal();
+      } catch (err) {
+        orchState = { status: 'error', finalImage: null, error: err.message || 'Unknown error' };
+        updateModal();
+      }
+    }
+
+    // Update modal based on orchestration state
+    function updateModal() {
+      const titleEl = document.getElementById('modalTitle');
+      const containerEl = document.getElementById('imageContainer');
+      const footerEl = document.getElementById('modalFooter');
+      const loadingEl = document.getElementById('loading');
+      const loadingTextEl = document.getElementById('loadingText');
+
+      switch (orchState.status) {
+        case 'generating':
+          titleEl.textContent = 'Creating...';
+          containerEl.innerHTML = `<div class="loading"><div class="spinner"></div><p class="loading-text">Generating...</p></div>`;
+          footerEl.style.display = 'none';
+          break;
+        case 'refining':
+          titleEl.textContent = 'Refining...';
+          containerEl.innerHTML = `<div class="loading"><div class="spinner"></div><p class="loading-text">Refining details...</p></div>`;
+          footerEl.style.display = 'none';
+          break;
+        case 'complete':
+          titleEl.textContent = 'Your Image';
+          containerEl.innerHTML = `<img src="${orchState.finalImage}" alt="Final result">`;
+          footerEl.style.display = 'block';
+          break;
+        case 'error':
+          titleEl.textContent = 'Error';
+          containerEl.innerHTML = `<div class="loading"><p class="error-text">${orchState.error}</p></div>`;
+          footerEl.style.display = 'none';
+          break;
+      }
+    }
+
+    // Close modal
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+      orchState = { status: 'idle', finalImage: null, error: null };
+    }
+
+    // Download image
+    async function downloadImage() {
+      if (!orchState.finalImage) return;
+
+      const btn = document.getElementById('downloadBtn');
+      btn.disabled = true;
+      btn.textContent = 'Downloading...';
+
+      try {
+        const response = await fetch(orchState.finalImage);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `shoot-${Date.now()}.png`;
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch {
+        window.open(orchState.finalImage, '_blank');
+      }
+
+      btn.disabled = false;
+      btn.textContent = 'Download Image';
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modal').addEventListener('click', closeModal);
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Initialize
+    renderGrid();
+  </script>
+</body>
+</html>
