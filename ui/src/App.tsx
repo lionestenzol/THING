@@ -87,6 +87,7 @@ function App() {
   const [selectedShootType, setSelectedShootType] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [shootResult, setShootResult] = useState<ShootResult | null>(null);
+  const [generatedShootType, setGeneratedShootType] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allModules = useMemo(() => {
@@ -114,6 +115,14 @@ function App() {
 
   // Effect: run orchestration when compilation completes
   useEffect(() => {
+    // Cancel if user navigates away from choose screen
+    if (screen !== 'choose') {
+      if (isGenerating) {
+        setIsGenerating(false);
+        pendingShootTypeRef.current = null;
+      }
+      return;
+    }
     if (!state.compiled || !pendingShootTypeRef.current || !isGenerating) return;
 
     const shootType = pendingShootTypeRef.current;
@@ -126,13 +135,14 @@ function App() {
         shootType,
       });
       setShootResult(result);
+      setGeneratedShootType(shootType);
       pendingShootTypeRef.current = null;
       setIsGenerating(false);
       setScreen('results');
     }, 1500);
 
     return () => clearTimeout(timer);
-  }, [state.compiled, isGenerating]);
+  }, [state.compiled, isGenerating, screen]);
 
   const handleGenerate = () => {
     if (!selectedShootType) return;
@@ -157,6 +167,7 @@ function App() {
     setUploadedImage(null);
     setSelectedShootType(null);
     setShootResult(null);
+    setGeneratedShootType(null);
     setScreen('landing');
   };
 
@@ -329,8 +340,8 @@ function App() {
 
   // Screen 4: Results (Editor Mode - Single Final Image)
   if (screen === 'results') {
-    const shootTypeName = selectedShootType
-      ? (SHOOT_TYPE_NAMES[selectedShootType] || 'Your Shoot')
+    const shootTypeName = generatedShootType
+      ? (SHOOT_TYPE_NAMES[generatedShootType] || 'Your Shoot')
       : 'Your Shoot';
 
     return (
