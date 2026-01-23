@@ -105,12 +105,9 @@ export function runShoot(
   // Step 1: Base prompt comes from compiler (Phase B)
   const basePrompt = compiled.prompt;
 
-  // Step 2: Internally we'd generate 6 variations (hidden)
-  // For now, this is conceptual - the prompt already defines the sheet
-  const _variationCount = 6;
-
-  // Step 3: Auto-select best
-  const _bestIndex = selectBest(_variationCount);
+  // Step 2-3: Internally generate 6 variations and auto-select best (index 0)
+  // For now conceptual - actual image gen would happen here
+  selectBest(6);
 
   // Step 4: Build refinement pass
   const refinementPass = buildRefinementPrompt(input.characterRef);
