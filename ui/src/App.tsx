@@ -1,4 +1,4 @@
-import { useReducer, useMemo, useState, useEffect } from 'react';
+import { useReducer, useMemo, useState, useRef } from 'react';
 import { initialState, reduce } from '../../compiler/stateMachine';
 import type { PromptLibrary, PromptModule } from '../../compiler/types';
 import type { Event } from '../../compiler/stateMachine';
@@ -31,31 +31,46 @@ function buildLibrary(): PromptLibrary {
   return { byId, globals };
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  facial_pose: 'FACIAL',
-  anatomy_pose: 'ANATOMY',
-  apparel_textile: 'APPAREL',
-  cinematography: 'CINEMATOGRAPHY',
-  product: 'PRODUCT',
+// Human-friendly shoot type names
+const SHOOT_TYPE_NAMES: Record<string, string> = {
+  facial_pose_primary_moods: '6 Professional Headshots',
+  facial_pose_bizarre_expressions: 'Expressive Character Shots',
+  facial_pose_ocular_macro: 'Eye Detail Close-ups',
+  facial_pose_full_head_dynamics: 'Dynamic Head Angles',
+  anatomy_pose_fashion_stances: 'Full-Body Fashion Shoot',
+  anatomy_pose_floating_poses: 'Floating Suspended Poses',
+  anatomy_pose_floor_poses: 'Floor & Reclined Poses',
+  anatomy_pose_kung_fu_moves: 'Action Pose Shoot',
+  anatomy_pose_hand_gestures: 'Hand Detail Shots',
+  apparel_textile_luxury_editorial: 'Luxury Fashion Editorial',
+  apparel_textile_street_utility: 'Streetwear Lookbook',
+  product_macro: 'Product Hero Shots',
+  cinematography_essential_angles: 'Classic Studio Angles',
+  cinematography_kinetic_flash: 'Motion Flash Shoot',
+  cinematography_street_flash: 'Street Style Flash',
+  cinematography_editorial_set_projection: 'Editorial Lighting Setup',
 };
 
-const CARD_DESCRIPTIONS: Record<string, string> = {
-  facial_pose_primary_moods: '6-frame facial expression lock',
-  facial_pose_bizarre_expressions: 'Extreme facial expressions, no drift',
-  facial_pose_ocular_macro: 'Eye-focused detail shots',
-  anatomy_pose_fashion_stances: 'Full-body pose consistency',
-  anatomy_pose_floating_poses: 'Suspended body positions',
-  anatomy_pose_floor_poses: 'Ground-level body control',
-  anatomy_pose_kung_fu_moves: 'Action pose lock',
-  anatomy_pose_hand_gestures: 'Hand position precision',
-  apparel_textile_luxury_editorial: 'Garment structure, no distortion',
-  apparel_textile_street_utility: 'Streetwear consistency',
-  product_macro: 'Product interaction, no drift',
-  cinematography_essential_angles: 'Core camera angles',
-  cinematography_kinetic_flash: 'Motion flash freeze',
-  cinematography_street_flash: 'Street flash, frozen motion',
-  cinematography_editorial_set_projection: 'Editorial lighting control',
+const SHOOT_TYPE_DESCRIPTIONS: Record<string, string> = {
+  facial_pose_primary_moods: 'Professional headshot grid with 6 expressions',
+  facial_pose_bizarre_expressions: 'Bold, editorial facial expressions',
+  facial_pose_ocular_macro: 'Extreme close-up eye photography',
+  facial_pose_full_head_dynamics: 'Head tilts and dynamic angles',
+  anatomy_pose_fashion_stances: 'Classic fashion model poses',
+  anatomy_pose_floating_poses: 'Weightless, suspended body shots',
+  anatomy_pose_floor_poses: 'Elegant floor and reclined poses',
+  anatomy_pose_kung_fu_moves: 'Dynamic martial arts action poses',
+  anatomy_pose_hand_gestures: 'Detailed hand and gesture shots',
+  apparel_textile_luxury_editorial: 'High-end fashion garment focus',
+  apparel_textile_street_utility: 'Urban streetwear aesthetic',
+  product_macro: 'Product interaction close-ups',
+  cinematography_essential_angles: 'Foundational camera angles',
+  cinematography_kinetic_flash: 'Frozen motion with flash',
+  cinematography_street_flash: 'Gritty street flash aesthetic',
+  cinematography_editorial_set_projection: 'Controlled studio lighting',
 };
+
+type Screen = 'landing' | 'upload' | 'choose' | 'results';
 
 function App() {
   const library = useMemo(() => buildLibrary(), []);
@@ -65,136 +80,308 @@ function App() {
     initialState()
   );
 
-  const [selectedModuleId, setSelectedModuleId] = useState<string | null>(null);
-
-  // Auto-set all references to remove friction
-  useEffect(() => {
-    dispatch({ type: 'SET_REF', slot: 'character', value: 'uploaded' });
-    dispatch({ type: 'SET_REF', slot: 'product', value: 'uploaded' });
-    dispatch({ type: 'SET_REF', slot: 'environment', value: 'uploaded' });
-  }, []);
-
-  // Auto-compile when module is selected
-  useEffect(() => {
-    if (selectedModuleId && state.errors.length === 0) {
-      dispatch({ type: 'COMPILE' });
-    }
-  }, [selectedModuleId, state.errors.length]);
+  const [screen, setScreen] = useState<Screen>('landing');
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [selectedShootType, setSelectedShootType] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allModules = useMemo(() => {
     return Object.values(library.byId).filter((m) => m.category !== 'global_rules');
   }, [library]);
 
-  const handleCardClick = (moduleId: string) => {
-    setSelectedModuleId(moduleId);
-    dispatch({ type: 'SELECT_MODULE', moduleId });
+  const handleFileSelect = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setUploadedImage(e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
-  return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Headline */}
-        <header className="mb-12 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-zinc-100 leading-tight">
-            Same character. Every shoot. Guaranteed.
-          </h1>
-        </header>
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      handleFileSelect(file);
+    }
+  };
 
-        {/* Grid Section Header */}
-        <div className="mb-6">
-          <p className="text-sm text-zinc-500 uppercase tracking-wide">Ready-to-use visual systems</p>
-        </div>
+  const handleGenerate = () => {
+    if (!selectedShootType) return;
 
-        {/* Module Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-          {allModules.map((module) => (
-            <PromptCard
-              key={module.id}
-              module={module}
-              isSelected={selectedModuleId === module.id}
-              onClick={() => handleCardClick(module.id)}
-            />
-          ))}
-        </div>
+    setIsGenerating(true);
 
-        {/* Compiled Prompt Panel */}
-        {state.compiled && (
-          <div className="fixed inset-0 bg-zinc-950/95 backdrop-blur-sm z-50 flex items-center justify-center p-6" onClick={() => setSelectedModuleId(null)}>
-            <div className="bg-zinc-900 border border-zinc-800 rounded-lg max-w-4xl w-full max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
-              <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
-                <h2 className="text-xl font-semibold">Compiled Prompt</h2>
-                <button
-                  onClick={() => setSelectedModuleId(null)}
-                  className="text-zinc-400 hover:text-zinc-100 transition-colors"
-                >
-                  ✕
-                </button>
-              </div>
-              <div className="p-6 overflow-y-auto max-h-[60vh]">
-                <pre className="bg-zinc-950 p-4 rounded border border-zinc-700 text-sm text-zinc-300 whitespace-pre-wrap">
-                  {state.compiled.prompt}
-                </pre>
-              </div>
-              <div className="p-6 border-t border-zinc-800">
-                <CopyButton text={state.compiled.prompt} />
-              </div>
+    // Set refs and compile
+    dispatch({ type: 'SET_REF', slot: 'character', value: 'uploaded' });
+    dispatch({ type: 'SET_REF', slot: 'product', value: 'uploaded' });
+    dispatch({ type: 'SET_REF', slot: 'environment', value: 'uploaded' });
+    dispatch({ type: 'SELECT_MODULE', moduleId: selectedShootType });
+    dispatch({ type: 'COMPILE' });
+
+    // Simulate generation time for UX
+    setTimeout(() => {
+      setIsGenerating(false);
+      setScreen('results');
+    }, 1500);
+  };
+
+  const handleTryAnother = () => {
+    setSelectedShootType(null);
+    setScreen('choose');
+  };
+
+  const handleStartOver = () => {
+    setUploadedImage(null);
+    setSelectedShootType(null);
+    setScreen('landing');
+  };
+
+  const copyPrompt = () => {
+    if (state.compiled?.prompt) {
+      navigator.clipboard.writeText(state.compiled.prompt);
+    }
+  };
+
+  // Screen 1: Landing
+  if (screen === 'landing') {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12">
+          <header className="text-center mb-12">
+            <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 leading-tight mb-6">
+              Same character.<br />Every shoot.<br />Guaranteed.
+            </h1>
+            <p className="text-xl md:text-2xl text-zinc-400">
+              Generate a full professional photoshoot in 10 seconds.
+            </p>
+          </header>
+
+          <button
+            onClick={() => setScreen('upload')}
+            className="bg-neon-lime text-zinc-950 text-xl md:text-2xl font-bold px-12 py-6 rounded-xl hover:bg-neon-lime/90 transition-all transform hover:scale-105"
+          >
+            Upload Character
+          </button>
+
+          {/* Below the fold - secondary presets */}
+          <div className="mt-24 text-center">
+            <p className="text-sm text-zinc-600 uppercase tracking-wide mb-6">Popular shoot types</p>
+            <div className="flex flex-wrap justify-center gap-3">
+              {['Headshots', 'Fashion Poses', 'Product Shots'].map((preset) => (
+                <span key={preset} className="text-sm text-zinc-500 px-4 py-2 border border-zinc-800 rounded-full">
+                  {preset}
+                </span>
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
+
+  // Screen 2: Upload
+  if (screen === 'upload') {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+        <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 max-w-2xl mx-auto w-full">
+          <button
+            onClick={() => setScreen('landing')}
+            className="self-start mb-8 text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
+            &larr; Back
+          </button>
+
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-8">
+            Upload your character
+          </h2>
+
+          {!uploadedImage ? (
+            <div
+              onDrop={handleDrop}
+              onDragOver={(e) => e.preventDefault()}
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full aspect-square max-w-md border-2 border-dashed border-zinc-700 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-zinc-500 transition-colors"
+            >
+              <div className="text-6xl mb-4 text-zinc-600">+</div>
+              <p className="text-zinc-400 text-lg">Drop image here</p>
+              <p className="text-zinc-600 text-sm mt-2">or click to browse</p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileSelect(file);
+                }}
+              />
+            </div>
+          ) : (
+            <div className="w-full max-w-md">
+              <div className="relative aspect-square rounded-2xl overflow-hidden mb-6">
+                <img
+                  src={uploadedImage}
+                  alt="Uploaded character"
+                  className="w-full h-full object-cover"
+                />
+                <button
+                  onClick={() => setUploadedImage(null)}
+                  className="absolute top-4 right-4 bg-zinc-900/80 text-zinc-300 w-10 h-10 rounded-full flex items-center justify-center hover:bg-zinc-800 transition-colors"
+                >
+                  &times;
+                </button>
+              </div>
+              <button
+                onClick={() => setScreen('choose')}
+                className="w-full bg-neon-lime text-zinc-950 text-xl font-bold px-8 py-5 rounded-xl hover:bg-neon-lime/90 transition-all"
+              >
+                Continue
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Screen 3: Choose Shoot Type
+  if (screen === 'choose') {
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+        <div className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">
+          <button
+            onClick={() => setScreen('upload')}
+            className="mb-8 text-zinc-500 hover:text-zinc-300 transition-colors"
+          >
+            &larr; Back
+          </button>
+
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
+            Choose your shoot type
+          </h2>
+          <p className="text-zinc-500 text-center mb-10">
+            Tap one to select
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {allModules.map((module) => (
+              <button
+                key={module.id}
+                onClick={() => setSelectedShootType(module.id)}
+                className={`text-left p-6 rounded-xl border-2 transition-all ${
+                  selectedShootType === module.id
+                    ? 'bg-neon-lime/10 border-neon-lime'
+                    : 'bg-zinc-900 border-zinc-800 hover:border-zinc-600'
+                }`}
+              >
+                <h3 className="text-lg font-bold mb-1">
+                  {SHOOT_TYPE_NAMES[module.id] || module.label}
+                </h3>
+                <p className="text-sm text-zinc-400">
+                  {SHOOT_TYPE_DESCRIPTIONS[module.id] || 'Professional visual consistency'}
+                </p>
+              </button>
+            ))}
+          </div>
+
+          {selectedShootType && (
+            <div className="fixed bottom-0 left-0 right-0 p-6 bg-zinc-950/95 border-t border-zinc-800">
+              <div className="max-w-4xl mx-auto">
+                <button
+                  onClick={handleGenerate}
+                  disabled={isGenerating}
+                  className="w-full bg-neon-lime text-zinc-950 text-xl font-bold px-8 py-5 rounded-xl hover:bg-neon-lime/90 transition-all disabled:opacity-50"
+                >
+                  {isGenerating ? 'Generating...' : 'Generate Shoot'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Screen 4: Results
+  if (screen === 'results') {
+    const shootTypeName = selectedShootType
+      ? (SHOOT_TYPE_NAMES[selectedShootType] || 'Your Shoot')
+      : 'Your Shoot';
+
+    return (
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+        <div className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
+            {shootTypeName}
+          </h2>
+          <p className="text-zinc-500 text-center mb-8">
+            Your prompt is ready
+          </p>
+
+          {/* Simulated contact sheet preview */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8">
+            <div className="grid grid-cols-3 gap-2 mb-6">
+              {[...Array(6)].map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-square bg-zinc-800 rounded-lg flex items-center justify-center"
+                >
+                  {uploadedImage ? (
+                    <img
+                      src={uploadedImage}
+                      alt={`Frame ${i + 1}`}
+                      className="w-full h-full object-cover rounded-lg opacity-60"
+                    />
+                  ) : (
+                    <span className="text-zinc-600 text-xs">Frame {i + 1}</span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Compiled prompt preview */}
+            <div className="bg-zinc-950 rounded-lg p-4 max-h-48 overflow-y-auto">
+              <pre className="text-xs text-zinc-400 whitespace-pre-wrap font-mono">
+                {state.compiled?.prompt || 'Prompt not available'}
+              </pre>
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="space-y-3">
+            <button
+              onClick={copyPrompt}
+              className="w-full bg-neon-lime text-zinc-950 text-xl font-bold px-8 py-5 rounded-xl hover:bg-neon-lime/90 transition-all"
+            >
+              Copy Prompt
+            </button>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                onClick={handleGenerate}
+                className="bg-zinc-800 text-zinc-100 font-semibold px-6 py-4 rounded-xl hover:bg-zinc-700 transition-all"
+              >
+                Regenerate
+              </button>
+              <button
+                onClick={handleTryAnother}
+                className="bg-zinc-800 text-zinc-100 font-semibold px-6 py-4 rounded-xl hover:bg-zinc-700 transition-all"
+              >
+                Try Another Style
+              </button>
+            </div>
+            <button
+              onClick={handleStartOver}
+              className="w-full text-zinc-500 hover:text-zinc-300 py-3 transition-colors"
+            >
+              Start Over
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
-function PromptCard({
-  module,
-  isSelected,
-  onClick
-}: {
-  module: PromptModule;
-  isSelected: boolean;
-  onClick: () => void;
-}) {
-  const categoryTag = CATEGORY_LABELS[module.category] || module.category.toUpperCase();
-  const description = CARD_DESCRIPTIONS[module.id] || 'Professional visual consistency';
-
-  return (
-    <button
-      onClick={onClick}
-      className={`text-left p-6 rounded-lg border transition-all ${
-        isSelected
-          ? 'bg-neon-lime/10 border-neon-lime'
-          : 'bg-zinc-900 border-zinc-800 hover:border-zinc-700'
-      }`}
-    >
-      <div className="text-xs text-zinc-500 uppercase tracking-wide mb-2">{categoryTag}</div>
-      <h3 className="text-lg font-bold mb-2">{module.label}</h3>
-      <p className="text-sm text-zinc-400">{description}</p>
-    </button>
-  );
-}
-
-function CopyButton({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <button
-      onClick={handleCopy}
-      className={`w-full px-8 py-4 rounded-lg font-bold text-lg transition-all ${
-        copied
-          ? 'bg-green-600 text-white'
-          : 'bg-neon-lime text-zinc-950 hover:bg-neon-lime/90'
-      }`}
-    >
-      {copied ? '✓ Copied' : 'Copy Full Prompt'}
-    </button>
-  );
-}
-
-export default App
+export default App;
