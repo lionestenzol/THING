@@ -2,6 +2,8 @@ import { useReducer, useMemo, useState, useRef } from 'react';
 import { initialState, reduce } from '../../compiler/stateMachine';
 import type { PromptLibrary, PromptModule } from '../../compiler/types';
 import type { Event } from '../../compiler/stateMachine';
+import { runShoot, EDITOR_MODE } from './orchestrator';
+import type { ShootResult } from './orchestrator';
 
 import globalRulesData from '../../data/global_rules.json';
 import facialPoseData from '../../data/facial_pose.json';
@@ -84,6 +86,7 @@ function App() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedShootType, setSelectedShootType] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [shootResult, setShootResult] = useState<ShootResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allModules = useMemo(() => {
@@ -111,18 +114,28 @@ function App() {
 
     setIsGenerating(true);
 
-    // Set refs and compile
+    // Set refs and compile (Phase B - unchanged)
     dispatch({ type: 'SET_REF', slot: 'character', value: 'uploaded' });
     dispatch({ type: 'SET_REF', slot: 'product', value: 'uploaded' });
     dispatch({ type: 'SET_REF', slot: 'environment', value: 'uploaded' });
     dispatch({ type: 'SELECT_MODULE', moduleId: selectedShootType });
     dispatch({ type: 'COMPILE' });
 
-    // Simulate generation time for UX
+    // Orchestration: simulate generation + refinement pipeline
     setTimeout(() => {
+      // Get compiled output from state machine
+      const compiled = state.compiled;
+      if (compiled) {
+        // Run orchestrator: generates variations (hidden) → selects best → refines → returns one
+        const result = runShoot(compiled, {
+          characterRef: 'uploaded',
+          shootType: selectedShootType,
+        });
+        setShootResult(result);
+      }
       setIsGenerating(false);
       setScreen('results');
-    }, 1500);
+    }, 2000); // Slightly longer to simulate refinement pass
   };
 
   const handleTryAnother = () => {
@@ -133,12 +146,14 @@ function App() {
   const handleStartOver = () => {
     setUploadedImage(null);
     setSelectedShootType(null);
+    setShootResult(null);
     setScreen('landing');
   };
 
   const copyPrompt = () => {
-    if (state.compiled?.prompt) {
-      navigator.clipboard.writeText(state.compiled.prompt);
+    // In editor mode, copy the final refined prompt
+    if (shootResult?.finalPrompt) {
+      navigator.clipboard.writeText(shootResult.finalPrompt);
     }
   };
 
@@ -302,7 +317,7 @@ function App() {
     );
   }
 
-  // Screen 4: Results
+  // Screen 4: Results (Editor Mode - Single Final Image)
   if (screen === 'results') {
     const shootTypeName = selectedShootType
       ? (SHOOT_TYPE_NAMES[selectedShootType] || 'Your Shoot')
@@ -310,42 +325,74 @@ function App() {
 
     return (
       <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
-        <div className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
-            {shootTypeName}
-          </h2>
-          <p className="text-zinc-500 text-center mb-8">
-            Your prompt is ready
-          </p>
-
-          {/* Simulated contact sheet preview */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8">
-            <div className="grid grid-cols-3 gap-2 mb-6">
-              {[...Array(6)].map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square bg-zinc-800 rounded-lg flex items-center justify-center"
-                >
-                  {uploadedImage ? (
-                    <img
-                      src={uploadedImage}
-                      alt={`Frame ${i + 1}`}
-                      className="w-full h-full object-cover rounded-lg opacity-60"
-                    />
-                  ) : (
-                    <span className="text-zinc-600 text-xs">Frame {i + 1}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* Compiled prompt preview */}
-            <div className="bg-zinc-950 rounded-lg p-4 max-h-48 overflow-y-auto">
-              <pre className="text-xs text-zinc-400 whitespace-pre-wrap font-mono">
-                {state.compiled?.prompt || 'Prompt not available'}
-              </pre>
-            </div>
+        <div className="flex-1 px-6 py-12 max-w-2xl mx-auto w-full">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <p className="text-neon-lime text-sm font-medium uppercase tracking-wide mb-2">
+              Final Result
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold">
+              {shootTypeName}
+            </h2>
           </div>
+
+          {/* Single Final Image (Editor Mode) */}
+          {EDITOR_MODE ? (
+            <div className="mb-8">
+              {/* Single polished result */}
+              <div className="relative aspect-[4/5] bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden mb-4">
+                {uploadedImage ? (
+                  <img
+                    src={uploadedImage}
+                    alt="Final result"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="text-zinc-600">Final Image</span>
+                  </div>
+                )}
+                {/* Refinement badge */}
+                <div className="absolute top-4 right-4 bg-zinc-900/90 backdrop-blur-sm text-zinc-300 text-xs px-3 py-1 rounded-full border border-zinc-700">
+                  Refined
+                </div>
+              </div>
+
+              {/* Minimal metadata */}
+              {shootResult && (
+                <p className="text-center text-zinc-600 text-xs font-mono">
+                  ID: {shootResult.fingerprint}
+                </p>
+              )}
+            </div>
+          ) : (
+            /* Debug mode: show sheet (hidden in production) */
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8">
+              <div className="grid grid-cols-3 gap-2 mb-6">
+                {[...Array(6)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="aspect-square bg-zinc-800 rounded-lg flex items-center justify-center"
+                  >
+                    {uploadedImage ? (
+                      <img
+                        src={uploadedImage}
+                        alt={`Frame ${i + 1}`}
+                        className="w-full h-full object-cover rounded-lg opacity-60"
+                      />
+                    ) : (
+                      <span className="text-zinc-600 text-xs">Frame {i + 1}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div className="bg-zinc-950 rounded-lg p-4 max-h-48 overflow-y-auto">
+                <pre className="text-xs text-zinc-400 whitespace-pre-wrap font-mono">
+                  {shootResult?._basePrompt || 'Prompt not available'}
+                </pre>
+              </div>
+            </div>
+          )}
 
           {/* Action buttons */}
           <div className="space-y-3">
@@ -355,20 +402,12 @@ function App() {
             >
               Copy Prompt
             </button>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                onClick={handleGenerate}
-                className="bg-zinc-800 text-zinc-100 font-semibold px-6 py-4 rounded-xl hover:bg-zinc-700 transition-all"
-              >
-                Regenerate
-              </button>
-              <button
-                onClick={handleTryAnother}
-                className="bg-zinc-800 text-zinc-100 font-semibold px-6 py-4 rounded-xl hover:bg-zinc-700 transition-all"
-              >
-                Try Another Style
-              </button>
-            </div>
+            <button
+              onClick={handleTryAnother}
+              className="w-full bg-zinc-800 text-zinc-100 font-semibold px-6 py-4 rounded-xl hover:bg-zinc-700 transition-all"
+            >
+              Try Another Style
+            </button>
             <button
               onClick={handleStartOver}
               className="w-full text-zinc-500 hover:text-zinc-300 py-3 transition-colors"
