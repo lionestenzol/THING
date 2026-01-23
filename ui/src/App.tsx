@@ -1,4 +1,4 @@
-import { useReducer, useMemo, useState, useRef } from 'react';
+import { useReducer, useMemo, useState, useRef, useEffect } from 'react';
 import { initialState, reduce } from '../../compiler/stateMachine';
 import type { PromptLibrary, PromptModule } from '../../compiler/types';
 import type { Event } from '../../compiler/stateMachine';
@@ -109,10 +109,36 @@ function App() {
     }
   };
 
+  // Track pending generation to avoid stale closure
+  const pendingShootTypeRef = useRef<string | null>(null);
+
+  // Effect: run orchestration when compilation completes
+  useEffect(() => {
+    if (!state.compiled || !pendingShootTypeRef.current || !isGenerating) return;
+
+    const shootType = pendingShootTypeRef.current;
+
+    // Simulate generation + refinement pipeline delay
+    const timer = setTimeout(() => {
+      // Run orchestrator: generates variations (hidden) → selects best → refines → returns one
+      const result = runShoot(state.compiled!, {
+        characterRef: 'uploaded',
+        shootType,
+      });
+      setShootResult(result);
+      pendingShootTypeRef.current = null;
+      setIsGenerating(false);
+      setScreen('results');
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [state.compiled, isGenerating]);
+
   const handleGenerate = () => {
     if (!selectedShootType) return;
 
     setIsGenerating(true);
+    pendingShootTypeRef.current = selectedShootType;
 
     // Set refs and compile (Phase B - unchanged)
     dispatch({ type: 'SET_REF', slot: 'character', value: 'uploaded' });
@@ -120,22 +146,6 @@ function App() {
     dispatch({ type: 'SET_REF', slot: 'environment', value: 'uploaded' });
     dispatch({ type: 'SELECT_MODULE', moduleId: selectedShootType });
     dispatch({ type: 'COMPILE' });
-
-    // Orchestration: simulate generation + refinement pipeline
-    setTimeout(() => {
-      // Get compiled output from state machine
-      const compiled = state.compiled;
-      if (compiled) {
-        // Run orchestrator: generates variations (hidden) → selects best → refines → returns one
-        const result = runShoot(compiled, {
-          characterRef: 'uploaded',
-          shootType: selectedShootType,
-        });
-        setShootResult(result);
-      }
-      setIsGenerating(false);
-      setScreen('results');
-    }, 2000); // Slightly longer to simulate refinement pass
   };
 
   const handleTryAnother = () => {
@@ -398,7 +408,8 @@ function App() {
           <div className="space-y-3">
             <button
               onClick={copyPrompt}
-              className="w-full bg-neon-lime text-zinc-950 text-xl font-bold px-8 py-5 rounded-xl hover:bg-neon-lime/90 transition-all"
+              disabled={!shootResult}
+              className="w-full bg-neon-lime text-zinc-950 text-xl font-bold px-8 py-5 rounded-xl hover:bg-neon-lime/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Copy Prompt
             </button>
