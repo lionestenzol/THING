@@ -2,6 +2,7 @@ import { useReducer, useMemo, useState, useRef } from 'react';
 import { initialState, reduce } from '../../compiler/stateMachine';
 import type { PromptLibrary, PromptModule } from '../../compiler/types';
 import type { Event } from '../../compiler/stateMachine';
+import { runShoot, type ShootOutput } from './orchestrator';
 
 import globalRulesData from '../../data/global_rules.json';
 import facialPoseData from '../../data/facial_pose.json';
@@ -84,6 +85,7 @@ function App() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [selectedShootType, setSelectedShootType] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [shootOutput, setShootOutput] = useState<ShootOutput | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allModules = useMemo(() => {
@@ -106,33 +108,42 @@ function App() {
     }
   };
 
-  const handleGenerate = () => {
-    if (!selectedShootType) return;
+  const handleGenerate = async () => {
+    if (!selectedShootType || !uploadedImage) return;
 
     setIsGenerating(true);
 
-    // Set refs and compile
+    // Set refs and compile (Phase B)
     dispatch({ type: 'SET_REF', slot: 'character', value: 'uploaded' });
     dispatch({ type: 'SET_REF', slot: 'product', value: 'uploaded' });
     dispatch({ type: 'SET_REF', slot: 'environment', value: 'uploaded' });
     dispatch({ type: 'SELECT_MODULE', moduleId: selectedShootType });
     dispatch({ type: 'COMPILE' });
 
-    // Simulate generation time for UX
-    setTimeout(() => {
-      setIsGenerating(false);
+    // Run orchestrator (Phase C) - generates hidden variations, picks best, refines
+    try {
+      const output = await runShoot({
+        referenceImage: uploadedImage,
+        compiledPrompt: state.compiled?.prompt || '',
+        shootType: selectedShootType,
+      });
+      setShootOutput(output);
       setScreen('results');
-    }, 1500);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleTryAnother = () => {
     setSelectedShootType(null);
+    setShootOutput(null);
     setScreen('choose');
   };
 
   const handleStartOver = () => {
     setUploadedImage(null);
     setSelectedShootType(null);
+    setShootOutput(null);
     setScreen('landing');
   };
 
@@ -302,7 +313,7 @@ function App() {
     );
   }
 
-  // Screen 4: Results
+  // Screen 4: Results (Editor Mode - Single Final Image)
   if (screen === 'results') {
     const shootTypeName = selectedShootType
       ? (SHOOT_TYPE_NAMES[selectedShootType] || 'Your Shoot')
@@ -310,57 +321,54 @@ function App() {
 
     return (
       <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
-        <div className="flex-1 px-6 py-12 max-w-4xl mx-auto w-full">
+        <div className="flex-1 px-6 py-12 max-w-2xl mx-auto w-full">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-2">
             {shootTypeName}
           </h2>
           <p className="text-zinc-500 text-center mb-8">
-            Your prompt is ready
+            Your final image is ready
           </p>
 
-          {/* Simulated contact sheet preview */}
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 mb-8">
-            <div className="grid grid-cols-3 gap-2 mb-6">
-              {[...Array(6)].map((_, i) => (
-                <div
-                  key={i}
-                  className="aspect-square bg-zinc-800 rounded-lg flex items-center justify-center"
-                >
-                  {uploadedImage ? (
-                    <img
-                      src={uploadedImage}
-                      alt={`Frame ${i + 1}`}
-                      className="w-full h-full object-cover rounded-lg opacity-60"
-                    />
-                  ) : (
-                    <span className="text-zinc-600 text-xs">Frame {i + 1}</span>
-                  )}
+          {/* Single Final Image - No contact sheets, no grids, no prompts */}
+          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden mb-8">
+            <div className="aspect-square">
+              {shootOutput?.finalImage ? (
+                <img
+                  src={shootOutput.finalImage}
+                  alt="Final result"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-zinc-800">
+                  <span className="text-zinc-500">Processing...</span>
                 </div>
-              ))}
-            </div>
-
-            {/* Compiled prompt preview */}
-            <div className="bg-zinc-950 rounded-lg p-4 max-h-48 overflow-y-auto">
-              <pre className="text-xs text-zinc-400 whitespace-pre-wrap font-mono">
-                {state.compiled?.prompt || 'Prompt not available'}
-              </pre>
+              )}
             </div>
           </div>
 
           {/* Action buttons */}
           <div className="space-y-3">
             <button
-              onClick={copyPrompt}
+              onClick={() => {
+                if (shootOutput?.finalImage) {
+                  // Download the final image
+                  const link = document.createElement('a');
+                  link.href = shootOutput.finalImage;
+                  link.download = `${shootTypeName.replace(/\s+/g, '-').toLowerCase()}.png`;
+                  link.click();
+                }
+              }}
               className="w-full bg-neon-lime text-zinc-950 text-xl font-bold px-8 py-5 rounded-xl hover:bg-neon-lime/90 transition-all"
             >
-              Copy Prompt
+              Download Image
             </button>
             <div className="grid grid-cols-2 gap-3">
               <button
                 onClick={handleGenerate}
-                className="bg-zinc-800 text-zinc-100 font-semibold px-6 py-4 rounded-xl hover:bg-zinc-700 transition-all"
+                disabled={isGenerating}
+                className="bg-zinc-800 text-zinc-100 font-semibold px-6 py-4 rounded-xl hover:bg-zinc-700 transition-all disabled:opacity-50"
               >
-                Regenerate
+                {isGenerating ? 'Generating...' : 'Regenerate'}
               </button>
               <button
                 onClick={handleTryAnother}
