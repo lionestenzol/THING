@@ -171,11 +171,12 @@ function App() {
     setScreen('landing');
   };
 
-  const copyPrompt = () => {
-    // In editor mode, copy the final refined prompt
-    if (shootResult?.finalPrompt) {
-      navigator.clipboard.writeText(shootResult.finalPrompt);
-    }
+  const handleDownload = () => {
+    if (!uploadedImage) return;
+    const link = document.createElement('a');
+    link.href = uploadedImage;
+    link.download = `${generatedShootType || 'photo'}-${Date.now()}.png`;
+    link.click();
   };
 
   // Screen 1: Landing
@@ -378,13 +379,6 @@ function App() {
                   Refined
                 </div>
               </div>
-
-              {/* Minimal metadata */}
-              {shootResult && (
-                <p className="text-center text-zinc-600 text-xs font-mono">
-                  ID: {shootResult.fingerprint}
-                </p>
-              )}
             </div>
           ) : (
             /* Debug mode: show sheet (hidden in production) */
@@ -418,11 +412,11 @@ function App() {
           {/* Action buttons */}
           <div className="space-y-3">
             <button
-              onClick={copyPrompt}
-              disabled={!shootResult}
+              onClick={handleDownload}
+              disabled={!uploadedImage}
               className="w-full bg-neon-lime text-zinc-950 text-xl font-bold px-8 py-5 rounded-xl hover:bg-neon-lime/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Copy Prompt
+              Download
             </button>
             <button
               onClick={handleTryAnother}
