@@ -1,72 +1,62 @@
 [
   {
-    "id": "global_navigation_structure",
+    "id": "grid_format_standard",
     "category": "global_rules",
-    "label": "Primary Navigation",
-    "prompt_text": "The app homepage is a stack of category sections, each containing a grid of cards. Each category answers the question: 'What am I trying to create right now?' Examples include Anatomy & Poses, Facial Dynamics, Apparel & Textile, Macro & Product, and Cinematography.",
+    "label": "Grid Format Standard",
+    "prompt_text": "Create a PROFESSIONAL 3x2 GRID CONTACT SHEET with exactly 6 images. Resolution: 8K. All frames must be identical in size and perfectly aligned with thin 2px grid dividers between frames.",
     "constraints": [
-      "Categories are always visible on scroll",
-      "Categories are never hidden behind filters",
-      "Each category clearly shows how many modules it contains"
+      "Exact 3x2 grid, exactly 6 frames",
+      "All frames identical in size and perfectly aligned",
+      "Thin 2px grid dividers"
     ]
   },
   {
-    "id": "global_grid_layout",
+    "id": "visual_consistency",
     "category": "global_rules",
-    "label": "Grid Card Layout",
-    "prompt_text": "All prompts are displayed as grid cards. Think of each card as: 'One ready-to-use visual system.' The grid is designed to be the primary interaction model of the app.",
+    "label": "Visual Consistency",
+    "prompt_text": "Maintain absolute visual consistency across all frames. Same lighting setup, same color grading, same level of detail, and same professional quality in every frame.",
     "constraints": [
-      "Cards are displayed in a clean, evenly spaced grid",
-      "All cards are equal size",
-      "The grid is easy to scan visually",
-      "Cards never overlap or resize unexpectedly"
+      "Consistent lighting across all frames",
+      "Consistent color grading and tone",
+      "Same level of detail and sharpness",
+      "Professional studio quality throughout"
     ]
   },
   {
-    "id": "global_card_content",
+    "id": "identity_lock",
     "category": "global_rules",
-    "label": "Card Content",
-    "prompt_text": "Each grid card contains a Category Tag, Prompt Name, Short Description, and a Copy Icon. Descriptions explain what the user will get, avoid technical jargon, and use simple, visual language.",
+    "label": "Identity Lock",
+    "prompt_text": "When a reference image is provided, maintain exact identity consistency. Same face, same proportions, same features, same skin texture. No drift, no redesign, no variation in core identity.",
     "constraints": [
-      "Entire card is clickable",
-      "Hover state clearly shows interactivity",
-      "Cards feel safe to click (no surprise actions)"
+      "Exact identity match to reference image",
+      "Same facial features and proportions",
+      "Same skin texture and details",
+      "Zero identity drift between frames"
     ]
   },
   {
-    "id": "global_prompt_detail_view",
+    "id": "clean_output",
     "category": "global_rules",
-    "label": "Prompt Detail View",
-    "prompt_text": "Clicking a card opens a detail view explaining what the prompt creates, typical use cases, and available options. It includes a Prompt Overview Panel, Variation Selector, Frame Grid (01-06), and a Primary Action Button to Deploy Full Contact Sheet.",
+    "label": "Clean Output",
+    "prompt_text": "Output must be clean and professional with no distractions. No visible text, labels, numbers, captions, watermarks, or overlays of any kind.",
     "constraints": [
-      "Variations change the vibe, not the structure",
-      "Variations never break the grid or layout",
-      "Switching variations should feel predictable, safe, and reversible",
-      "Frame tiles include frame number, short description, and copy button"
+      "No visible text, labels, numbers, captions, or overlays",
+      "No watermarks or branding",
+      "No frame numbers or indicators",
+      "Clean professional presentation"
     ]
   },
   {
-    "id": "global_copy_feedback",
+    "id": "technical_specs",
     "category": "global_rules",
-    "label": "Copy & Feedback Behavior",
-    "prompt_text": "Copying is the core action of the app. Users must be able to copy the full prompt or individual frames. The UI must provide immediate visual confirmation.",
+    "label": "Technical Specifications",
+    "prompt_text": "All outputs must meet professional technical standards. High resolution (8K), proper exposure, accurate colors, sharp focus where intended, and proper depth of field control.",
     "constraints": [
-      "Happen instantly",
-      "Show clear confirmation (checkmark, glow, or text change)",
-      "Never open pop-ups"
-    ]
-  },
-  {
-    "id": "global_visual_usability_standards",
-    "category": "global_rules",
-    "label": "Visual & Usability Standards",
-    "prompt_text": "The aesthetic uses a dark background with metallic chrome surfaces and neon-lime highlights. Typography uses Orbitron for headings and Switzer for body text. The app follows Nielsen Norman Group principles for obvious actions and consistent feedback.",
-    "constraints": [
-      "Animations must feel smooth, calm, and premium",
-      "No flashy or distracting effects",
-      "Use a golden-ratio type scale",
-      "Prioritize readability over decoration",
-      "Make actions obvious and keep interactions consistent"
+      "8K resolution minimum",
+      "Proper exposure and dynamic range",
+      "Accurate color reproduction",
+      "Sharp focus where intended",
+      "Professional image quality"
     ]
   }
 ]
